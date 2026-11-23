@@ -22,7 +22,7 @@ are identity. The u16 at +0x9C is 5 even when the count exceeds 5; do not use
 it as a count or a limit.
 
 **Geometry (5):** +0x88 polygons, +0x90 vec3 quantum, +0xA0 vec3 centre,
-+B0 vertices (s16 × 3; **position = s16 × quantum + centre**), +0xD0 u32
++0xB0 vertices (s16 × 3; **position = s16 × quantum + centre**), +0xD0 u32
 vertex count, +0xD4 u32 polygon count, +0xF0 materials (8 B each), +0x118
 per-polygon material index (u8), +0x120 u8 material count, +0x130 BVH
 summary pointer. The target of +0x138 is still unidentified.
@@ -216,7 +216,8 @@ can be `(0, 0xFFFF)`. In `packs.rpf@0x454db010` (`ambient_malebody`) and
 `packs.rpf@0x45404010` (`ambient_femalebody`), all 80 nonempty links across
 42 groups match the u32 hashes in the indexed skeleton rows. Each rig has
 28 colliders. In the male rig, group 0 at body `0x24008` links `SKEL_Pelvis`
-(index 1) to collider 0 at `0x24950`, whose bound is at `0x26c50`.
+(index 1) and `BM_pelvis` (index 77) to collider 0 at `0x24950`, whose bound
+is at `0x26c50`.
 
 ### Collider bind transforms
 
@@ -245,8 +246,8 @@ how the runtime updates the body.
 
 (2026-11-23.) A vehicle fragment's physics is an **embedded type-6
 composite** inside the fragment's system page (not at its root), with the
-same header as a standalone composite: `+0x70` child pointers,
-`+0x78` child transforms (64 bytes each), `+0x98` u16 count twice (high: the
+same header as a standalone composite: `+0x70` child pointers, `+0x78`
+child transforms (64 bytes each), `+0x98` u16 count twice (high: the
 children and transforms resolve). Its children use more bound types than
 level collision: 0, 1, 2, 3, 4, 8, 9, 10, 13 and 14 were seen. Type 13 has a
 symmetric bbox and reads as a box, type 14 is cylinder-like and type 4 looks
@@ -285,8 +286,8 @@ these pairs.
 The fragment's `+0x18` points to its main drawable. At drawable `+0x90`,
 a pointer can lead to a block with the inline string `limits` at `+0x58`.
 Check the tag rather than assuming every non-null pointer is a limits
-block. The block stores two u32 count words at `+0x18`/`+0x1C` (equal
-in all samples) and an array pointer at `+0x20`.
+block. The block stores two u32 count words at `+0x18`/`+0x1C` (equal in
+all samples) and an array pointer at `+0x20`.
 
 | Limit row offset (stride `0x90`) | Stored value |
 |---|---|
