@@ -134,6 +134,41 @@ do not resolve either railway-associated id (`2287` or `4180`), using direct
 upper-case or CamelCase-to-UPPER_SNAKE_CASE spellings (2026-11-23). The older
 game's list is therefore not a substitute for the missing XML names.
 
+<details><summary>Reproduce this check (Python 3)</summary>
+
+```python
+import re
+from urllib.request import urlopen
+
+def elf(name):
+    h = 0
+    for c in name.encode("ascii"):
+        h = ((h << 4) + c) & 0xFFFFFFFF
+        g = h & 0xF0000000
+        if g:
+            h ^= g >> 24
+            h &= ~g & 0xFFFFFFFF
+    return h
+
+def spellings(name):
+    snake = re.sub(r"(.)([A-Z][a-z]+)", r"\1_\2", name)
+    snake = re.sub(r"([a-z0-9])([A-Z])", r"\1_\2", snake)
+    return {name.upper(), snake.upper()}
+
+url = "https://gist.githubusercontent.com/DurtyFree/b37463ea9bfd3089fab696f554509977/raw"
+text = urlopen(url, timeout=30).read().decode("utf-8-sig")
+names = re.findall(r"^\s*(\w+)\s*=\s*0x[0-9A-Fa-f]+", text, re.M)
+assert len(names) == 214
+assert elf("ROAD_TARMAC") == 0x04D164F3
+assert 18 + elf("ROAD_TARMAC") % 32749 == 0x1C31
+matches = [(n, s) for n in names for s in spellings(n)
+           if 18 + elf(s) % 32749 in (2287, 4180)]
+assert not matches, matches
+print("No matches among 214 names")
+```
+
+</details>
+
 Shader and parameter names turned out to be plain joaat
 ([§12](12-materials.md)), but the surface ids are not a 15-bit
 shift or fold of it (2026-11-21: 402 material names, as given, lower and
