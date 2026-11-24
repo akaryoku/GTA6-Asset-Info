@@ -234,20 +234,32 @@ not re-checked):
     the lobe roughness slice, green the 4-bit profile value and blue the
     unlit-side fill. The appearance library's hair presets (two colours,
     eight floats) are a different record; how the two relate is not known.
-  - **Ramp records** (2026-11-24; supersedes the earlier "not found in any
-    meta or PSO file"). The records are binary XML (RBF) files in
-    `packs.rpf`, keyed by text names, in four kinds: colour ramps, colour
-    sets, parameter ramps and parameter sets. Layouts (high):
-    - **Colour ramp:** four RGB stops, three f32 each, as display values
-      (n / 255, no alpha), and one curve.
-    - **Parameter ramp:** one f64 of about 0.0001 to 0.0003 (it reads as a
-      strand width in metres; medium), three multipliers and four curves.
-    - **Curve:** a `vector2_array` of 10 (x, y) f32 pairs.
-    - **Set:** names four ramps, one per strand slot. Fur sets are named
-      per animal model and coat.
+  - **Strand tables** (2026-11-24; high, the files parse to the last
+    byte; supersedes the earlier "not found in any meta or PSO file" and a
+    first reading of the same files as unnamed ramps, sets, multipliers
+    and a strand-width f64). The records are four
+    [RBF](17-other.md#rbf0-binary-xml) tables in `packs.rpf`: strand
+    colours, strand colour presets, strand materials and strand material
+    presets. An asset names one colour preset and one material preset by
+    joaat of the lower-case name.
+    - **Strand colour:** `Color0` to `Color3` (three f32 each, display
+      values, no alpha), `ColorBezierPoints` (10 (x, y) pairs) and
+      `Average`.
+    - **Strand material:** `Thickness` (metres; about 0.0001 to 0.0003),
+      `Roughness`, `Translucency` and `BinormalRoughness`, each with its
+      own 10-pair Bezier curve.
+    - **Colour preset:** four colour names, one per strand slot, and
+      `Average`.
+    - **Material preset:** four material names, `FresnelScale`,
+      `Softness`, `DirtBake`, `SnowBake`, `SweatBake`,
+      `DecalMaterialOpacityScale` (integers), and `UseStandardBsdf` on
+      some. Fur presets are named per animal model and coat.
+    - The colour atlas texel is gamma-encoded: linear base colour =
+      texel^2.4.
 
-    Open: how a hair asset names its sets, which multiplier scales which
-    atlas channel, and the total record counts.
+    Open: where `FresnelScale`, `Softness` and `UseStandardBsdf` enter the
+    shading, and whether a ped's colour preset comes from its outfit or
+    from the asset.
   - **Ambient** (medium, read once): the program scales two screen-space
     lighting buffers written by other passes, which are not identified.
     The coloured side factor is
