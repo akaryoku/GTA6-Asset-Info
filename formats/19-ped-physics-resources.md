@@ -128,6 +128,15 @@ padding.
 | (implicit, after the last table section, on 26 % of resources) | 2 × S × 4 + 8 + 4n | two per-strand u32 arrays, then a 2 × f16 range and n × {f16 value, u16 monotonic 0..0xFFFF} | inferred |
 | tail (offset at 0xAC) | 4 × (multiple of 3) | records {u24 index, u8 weight}. The record count is always a multiple of 3, and the three weights sum to 255 on 62 % of resources: extra points blended from guide points (143 of 205 fit) | inferred |
 
+**Graphics buffer sections** (2026-11-24; sizes checked on 3 grooms,
+meanings low confidence, none decoded): further sections of the groom's
+graphics buffer, by offset in its header. +0x00: four bytes per strand
+(two constant per groom, one varying, `ff`); +0x04: one u32 per strand;
++0x0C and +0x28: four bytes per strand, constant `40 80 bf ff` in the
+grooms seen; +0x1C: eight bytes per strand; +0x34: two f16 per point;
++0x38: one f16 per point; +0x3C: four bytes per segment. How these map to
+the sections in the table above is not checked.
+
 **Rendering and parameters** (2026-11-23; measured on 484 sampled grooms,
 not re-checked):
 
