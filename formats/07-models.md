@@ -505,6 +505,23 @@ per-layer vec4s are in [§12](12-materials.md).
   (medium that the caliper shares the disc's space unrotated). A
   configuration names at most one of each: of 4,063, 2,030 name both, 228
   only a disc, 14 only a caliper and 1,791 neither.
+- **Brake slots** (2026-11-24; names high, exact
+  joaat matches whose contents fit the names). Four mod slots hold brake
+  parts: `brakediscs` `814a6407` (a disc or a drum brake),
+  `brakediscs_rear` `ee557cc2`, `calipers_front` `98b9b49a` and
+  `calipers_rear` `c98dbea6` ([names](11-vehicle-paint.md#names-recovered-by-hash-2026-11-24)).
+  A part in a brake slot has one element, on bone 0, whose model hash is
+  joaat of the model name without `_hi` (`brakedisc_*`, `drumbrake_*`,
+  `caliper_*`). Over the 4,063 configurations, a disc named by model and a
+  `brakediscs` part never occur together, and no brake slot holds more
+  than one brake model in a configuration. Of 1,932 configurations with a
+  caliper named by model and a `calipers_rear` part, 1,820 have a
+  different caliper at the rear. So the parts named by model are probably
+  the front axle's (medium: the named calipers are the bigger ones).
+  Open: which caliper is used when a configuration has both a caliper
+  named by model and a `calipers_front` part (44 configurations), and the
+  names of slots `439fddac` and `2ba6699f`, which hold `caliper_rimlight`
+  and `drumbrake_rimlight` models (49 configurations).
 - **Hinged panels** (names high; hinge line medium, two cars): bones
   `door_dside_f`, `door_dside_r`, `door_pside_f`, `door_pside_r`, `bonnet`
   and `boot` sit on the hinge line, and the panel's vertices lie to one side,
