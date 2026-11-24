@@ -237,7 +237,35 @@ above, with `0cd27763` an array texture in p6.
 - **Data map channels** (medium: one layer traced, the same pattern seen in
   the other three): A is the layer's tint mask, colour = mix(layer colour,
   tinted colour, A), and a constant can switch it to 1 − A. G and B are
-  read, B also as 1 − B later; R is not read.
+  read, B also as 1 − B later; R is not read. *Refined from the main
+  program of `standard_uber_4lyr_dpm_dm_hbb` (2026-11-24, medium): B is
+  the layer's height (next item), G a roughness-like scalar (not
+  confirmed).*
+- **Height blend** (2026-11-24, medium: read once, from the main pixel
+  program of `standard_uber_4lyr_dpm_dm_hbb`). With h[k] the B channel of
+  layer k's data map and w[k] the weights above:
+
+  ```text
+  a[k] = max(0.01, (h[k] - 03754af2[k]) * b2339a6c[k])
+  b[k] = saturate(a[k] * w[k] * fade)
+  c[k] = b[k] / max(b[0], b[1], b[2], b[3], extra)
+  p[k] = 20 - 19 * saturate((blendsoftness[k] - 0.2) * 1.754)
+  d[k] = pow(c[k], p[k]) - 0.001
+  W[k] = saturate(d[k] / sum d)
+  final[k] = f24b51f2[k] * W[k] + (1 - sum_j f24b51f2[j] * W[j]) * w[k]
+  ```
+
+  The constants are vec4s, one component per layer, in the material's
+  second constant buffer at bytes 240 (`b2339a6c`, a height scale), 256
+  (`03754af2`, a height offset), 272 (`blendsoftness`, `cbc6c5b3`) and 288
+  (`f24b51f2`, how much the height blend replaces the plain weights). On 57
+  materials of 14 tiles: `f24b51f2` is all zero in 49 (so the plain
+  weights are used), `blendsoftness` 0.4–0.75, scale 1 in 55, offset 0 in
+  46. Not read: `fade` and the `extra` term. *This refines the render
+  check's "the higher layer wins at a boundary".*
+- **Detail array** `0cd27763` (slot p6, 2026-11-24, medium): sampled per
+  layer, with a per-layer slice taken from a constant. RG is a detail
+  normal (× 2 − 1), and B a brightness term around 0.5.
 - **Constants** (medium): the vec4s are per layer (x = layer 0 … w =
   layer 3), among them `tintintensity`, `tintblendamount`,
   `verttintintensity` and `bumpiness`. A layer picks one of two UV sets by
@@ -246,10 +274,10 @@ above, with `0cd27763` an array texture in p6.
   texture's UV set is chosen by the scalar `f354f896` (0, 1 or 2). *This
   disagrees with the per-layer table above, which lists `f354f896` as a
   vec4 at float 112 with values 1–16; both readings are kept.*
-- Open: G and B of the data maps, the height blend, a branch driven by
-  world position (an 8 × 8 grid per 512 units), a vec4 `b43d042b` that
-  diverts part of each weight to textures outside the material, and what
-  the array texture contributes.
+- Open: G of the data maps, the height blend's `fade` and `extra` terms, a branch driven by
+  world position (an 8 × 8 grid per 512 units), and a vec4 `b43d042b` that
+  diverts part of each weight to textures outside the material. *The
+  height blend and the array texture are answered above.*
 
 ### Render check
 
@@ -729,6 +757,15 @@ field `aadeb53e` are still unnamed; `c897af02` is `Features`.
     is blended in by the texture's R and the third by its B (each times the
     tint's alpha); the result replaces the colour by a weight not yet
     traced. Which texture this is was not identified.
+    *Stitch textures and weight (2026-11-24; read from the pixel program
+    `PS_DeferredPedTexturedNC` of effect `ped_standard_muv`):* the layer
+    samples two shared textures bound by the engine, not material
+    textures: declared resources `bcc5888e` (G the grey for the stitch
+    tint gradients, R and B the masks, A coverage) and `3418f74b` (a normal
+    map); a third of the same family is `35f6ad2e`. Only about 590
+    character programs declare them; their names and files are unknown.
+    The weight is `stitchesblendamount` (`22a03a4c`) × the coverage alpha,
+    for both colour and normal.
   - **Dirt:** weight = `dirtmapblendamount` (+0xe30) × the second packed
     garment map's R; above a threshold the colour is pulled towards a
     two-colour ramp from `dirttint`[0] and [1] (+0xe34, +0xe38), with
@@ -773,8 +810,8 @@ field `aadeb53e` are still unnamed; `c897af02` is `Features`.
   its role is unknown.
 - Open: 30 parameter names; where the parameter defaults come from (not in
   any indexed archive); the source of the per-part blend byte; the role of the kit's
-  `Tint0`–`2` on preset kits; the stitch weight and texture; the sheen
-  layer.
+  `Tint0`–`2` on preset kits; which files the stitch textures are (the
+  weight is now read, see the stitch layer above); the sheen layer.
 
 ### Ped model table
 
