@@ -835,34 +835,47 @@ field `aadeb53e` are still unnamed; `c897af02` is `Features`.
     textures: declared resources `bcc5888e` (G the grey for the stitch
     tint gradients, R and B the masks, A coverage) and `3418f74b` (a normal
     map); a third of the same family is `35f6ad2e`. Only about 590
-    character programs declare them; their names and files are unknown.
+    character programs declare them. *Names and files: see below.*
     The weight is `stitchesblendamount` (`22a03a4c`) × the coverage alpha,
     for both colour and normal.
-    *Stitch UV and mask texture (2026-11-24; high for the UV set and the
-    texture, from one garment of 3,207 vertices; medium for the colour
-    maths, one pixel program read once):*
-    - The stitch UV is the garment mesh's **third UV set**. Vertices away
-      from seams are parked at one point (U about 2.33, V about 0.53 on
-      the garment checked); seam vertices have U mod 1 between 0.35 and
-      0.65 and V running along the seam over many repeats (−55 to 25 on
-      one t-shirt).
-    - The stitch mask is a shared 128 × 128 texture in the graphics
-      texture store (texture hash `19a5e59eedc47faa`, 4 bytes per pixel),
-      sampled with wrap. It has three stitch columns at U 0.10–0.23,
-      0.43–0.56 and 0.77–0.89; the parked U lands in the empty gap between
-      the first two, and seams use the middle one.
-    - Weight = stitch amount × the texture's 0/1 stitch mask in the third
-      byte of each pixel, not the fourth byte, which is 102 off stitches.
-      *This conflicts with the reading just above (A = coverage and the
-      weight from it); both are kept. Which bytes are the grey and the
-      two tint masks is open.*
+    *Stitch textures named (2026-11-24; high: the input and texture
+    names pair up and all six are exact joaat matches, and the texture
+    channels are exactly what the program reads):*
+    - The three shared inputs are `pedstitchesd` (`bcc5888e`),
+      `pedstitchesma` (`35f6ad2e`) and `pedstitchesn` (`3418f74b`), bound
+      to the textures `ped_stitches_d` (`778effd4`), `ped_stitches_ma`
+      (`e70dcee8`) and `ped_stitches_n` (`b8ee0291`). They are in the
+      global graphics texture dictionary of the textures archive (134
+      named textures; the one that also holds the ped tint ramps), not in
+      a texture store. Each is 2048 × 128 with 6 mips; `_d` and `_ma` are
+      BC7, `_n` is BC1.
+    - `ped_stitches_d` is an atlas of stitch styles side by side: A is
+      coverage (0 off stitches), G the grey value (255 off, darker on the
+      thread), R and B the masks for the second and third stitch tint (0
+      on most styles). So weight = `stitchesblendamount` × A, the three
+      `stitchtint` gradients are indexed by G, and R and B scale tints two
+      and three, as read above.
+    - `ped_stitches_n` is a tangent-space normal map (flat = 127, 127,
+      255). `ped_stitches_ma` has G about 243 everywhere and A 100–255 on
+      stitches; the program read does not sample it, and its use is open.
     - Colour: three tint entries (a colour and an alpha each) give
       gradients indexed by the grey; S = mix(grey, T1, alpha1), then S
       moves towards T2 and T3 by each alpha × a mask channel; result =
-      mix(colour, S, weight).
-    - Open: the stitch normal map (two sibling textures of the same
-      family, `b7b497563d32cf8f` and `b65fa4c7a59c0f82`, are not plain
-      normal maps), and other garments.
+      mix(colour, S, weight) (medium: one pixel program read once).
+    - **Stitch UV** (medium): the garment mesh's **third UV set**, the only
+      one of a garment's four sets that runs along seams (V spans tens to
+      hundreds of repeats; −55 to 25 on one t-shirt). A garment without
+      stitches has it collapsed to one empty point of the atlas; on a
+      t-shirt the vertices away from seams sit in a small empty patch
+      (about 24 × 2 texels) beside a stitch line.
+    - *Superseded (2026-11-24): an earlier reading took a 128 × 128 texture
+      of the graphics texture store (`19a5e59eedc47faa`, three stitch
+      columns) as the stitch mask and its third byte as the weight. That
+      is not the stitch texture, so its weight byte, and the conflict it
+      raised with A = coverage, no longer apply.*
+    - Open: the V direction, the default stitch amount, which preset
+      supplies a lone model's amount and tints, the use of
+      `ped_stitches_ma`; nothing compared with a rendered image.
   - **Dirt:** weight = `dirtmapblendamount` (+0xe30) × the second packed
     garment map's R; above a threshold the colour is pulled towards a
     two-colour ramp from `dirttint`[0] and [1] (+0xe34, +0xe38), with
@@ -907,8 +920,9 @@ field `aadeb53e` are still unnamed; `c897af02` is `Features`.
   its role is unknown.
 - Open: 30 parameter names; where the parameter defaults come from (not in
   any indexed archive); the source of the per-part blend byte; the role of the kit's
-  `Tint0`–`2` on preset kits; which files the stitch textures are (the
-  weight is now read, see the stitch layer above); the sheen layer.
+  `Tint0`–`2` on preset kits; the default stitch amount and the use of
+  `ped_stitches_ma` (the stitch textures are now named, see the stitch
+  layer above); the sheen layer.
 
 ### Ped model table
 
