@@ -766,6 +766,31 @@ field `aadeb53e` are still unnamed; `c897af02` is `Features`.
     character programs declare them; their names and files are unknown.
     The weight is `stitchesblendamount` (`22a03a4c`) × the coverage alpha,
     for both colour and normal.
+    *Stitch UV and mask texture (2026-11-24; high for the UV set and the
+    texture, from one garment of 3,207 vertices; medium for the colour
+    maths, one pixel program read once):*
+    - The stitch UV is the garment mesh's **third UV set**. Vertices away
+      from seams are parked at one point (U about 2.33, V about 0.53 on
+      the garment checked); seam vertices have U mod 1 between 0.35 and
+      0.65 and V running along the seam over many repeats (−55 to 25 on
+      one t-shirt).
+    - The stitch mask is a shared 128 × 128 texture in the graphics
+      texture store (texture hash `19a5e59eedc47faa`, 4 bytes per pixel),
+      sampled with wrap. It has three stitch columns at U 0.10–0.23,
+      0.43–0.56 and 0.77–0.89; the parked U lands in the empty gap between
+      the first two, and seams use the middle one.
+    - Weight = stitch amount × the texture's 0/1 stitch mask in the third
+      byte of each pixel, not the fourth byte, which is 102 off stitches.
+      *This conflicts with the reading just above (A = coverage and the
+      weight from it); both are kept. Which bytes are the grey and the
+      two tint masks is open.*
+    - Colour: three tint entries (a colour and an alpha each) give
+      gradients indexed by the grey; S = mix(grey, T1, alpha1), then S
+      moves towards T2 and T3 by each alpha × a mask channel; result =
+      mix(colour, S, weight).
+    - Open: the stitch normal map (two sibling textures of the same
+      family, `b7b497563d32cf8f` and `b65fa4c7a59c0f82`, are not plain
+      normal maps), and other garments.
   - **Dirt:** weight = `dirtmapblendamount` (+0xe30) × the second packed
     garment map's R; above a threshold the colour is pulled towards a
     two-colour ramp from `dirttint`[0] and [1] (+0xe34, +0xe38), with
