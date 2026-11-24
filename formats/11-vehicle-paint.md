@@ -185,9 +185,31 @@ a separate PSO ([§17](17-other.md#vehicle-handling)).
       element's 64-bit model value, whose first byte equals the element's
       Priority and whose last four bytes are the model name hash; its
       meaning is unknown (it is not a selector).
-    - Open: the key names; how number plate switches are answered
-      (defaults, empty options, keys from bumpers, bones on fitted
-      bumpers); how the `_da` (double axle) attach bones are chosen.
+    - **Number plate switches** (2026-11-24; bone names and switch
+      structure high, exact joaat matches and the same layout in all 233
+      switches; not compared with the running game). The plate bones are
+      `plate_f` `03e3e512`, `plate_r` `567b0a43`, `mod_plate_f` `a0976fcb`
+      and `mod_plate_r` `8e174ab3`. Each plate, plate frame and plate
+      mount part of the shared library has four elements, one per plate
+      bone, and two switches over them. One switch record is named by the
+      modifier lists of several parts, so the plate parts share them.
+
+      | Switch | Default | Options |
+      |---|---|---|
+      | rear | the element on `plate_r` | key `c623bf2c` → element on `mod_plate_r`; key `68bd62ca` → nothing |
+      | front | none | key `2aef799d` → element on `plate_f`; `2aef799d` with second key `7be534e0` → element on `mod_plate_f`; key `503c4352`, alone or as second key → nothing |
+
+      Who sets the keys: `c623bf2c` parts in slot `bumper_r` (291 part
+      records), pickup bed and body parts and boots; `7be534e0` parts in
+      slot `bumper_f` `e7a4b1f5` (73); `2aef799d` parts of 108 vehicles;
+      `503c4352` parts of 36 vehicles; `68bd62ca` no part (only a library
+      key modifier names it). So a vehicle without `2aef799d` has no front
+      plate, as the data reads. Over 4,063 configurations, 2,934 have a
+      plate part: 2,470 give a rear plate only and 464 front and rear, and
+      326 use the moved rear position.
+    - Open: the key names (including the five plate keys); what sets
+      `68bd62ca`; the 63 other library switches with a default or an
+      empty option; how the `_da` (double axle) attach bones are chosen.
   - Pickups have a bed model `<model>_pickup`; parts that fit a bed put
     their models at bone `mod_bed_attach`. The part in the bed slot
     (`1c9dd6fe`) names its models by hashes that match no model name, so
@@ -791,6 +813,11 @@ the field is the only support.
 | `98b9b49a` | `calipers_front` | mod slot |  |
 | `c98dbea6` | `calipers_rear` | mod slot |  |
 | `8d48fd33` | `bumper_r` | mod slot | also a bone and group name, above |
+| `e7a4b1f5` | `bumper_f` | mod slot | also a bone and group name, above |
+| `03e3e512` | `plate_f` | plate bone | see number plate switches, above |
+| `567b0a43` | `plate_r` | plate bone |  |
+| `a0976fcb` | `mod_plate_f` | plate bone |  |
+| `8e174ab3` | `mod_plate_r` | plate bone |  |
 | `c8313558` | `carPrimerSelection` | colour record group Y | stem found on two hashes |
 | `6076324c` | `carPrimerSelectionB` | group Y |  |
 | `52b096c1` | `carPrimerSelectionC` | group Y |  |
