@@ -164,6 +164,30 @@ a separate PSO ([§17](17-other.md#vehicle-handling)).
     - 142 vehicles have switches (1,042 switches, 158 with a default
       element); 399 of those vehicles' 2,187 configurations set a key some
       switch answers to, and 65 match more than one option of a switch.
+    - **Library switches and cross-resource keys** (2026-11-24; structure
+      and pick rule high: renders of three trucks show one guard per side
+      fitting between the wheels, and piece lists were compared; the
+      short / mid / long and hi / lo meanings are inferred from the model
+      names of the elements they pick). The switch record also occurs in
+      the parts library (129 switches, 403 options), named in a library
+      part's modifier list as in a vehicle pack. Truck side guard parts
+      (slot `e8ea14fc`) have up to 12 elements (high / low × left / right ×
+      short / mid / long) on the bed model's bones `sideguard_attach_l` /
+      `_r` (also `_l_da` / `_r_da`) and two switches, one per side, with no
+      default. Bed parts set a height key through a key modifier
+      (`93a3a3ef` on flatbeds picks the "hi" elements, `15354754` on boxes
+      the "lo" ones), and the chassis part sets a wheelbase key
+      (`77a0c459` picks "short", on a tipper; `2e440529` "mid";
+      `714aaeee` "long"). A pack's own part can name a key modifier that
+      is a record of the library, not of the pack: the three wheelbase key
+      modifiers are library records referenced only from vehicle packs.
+    - Element field `8dcff55d` (u16, 0–300) equals bytes 2–3 of the
+      element's 64-bit model value, whose first byte equals the element's
+      Priority and whose last four bytes are the model name hash; its
+      meaning is unknown (it is not a selector).
+    - Open: the key names; how number plate switches are answered
+      (defaults, empty options, keys from bumpers, bones on fitted
+      bumpers); how the `_da` (double axle) attach bones are chosen.
   - Pickups have a bed model `<model>_pickup`; parts that fit a bed put
     their models at bone `mod_bed_attach`. The part in the bed slot
     (`1c9dd6fe`) names its models by hashes that match no model name, so
