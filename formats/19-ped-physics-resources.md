@@ -156,6 +156,30 @@ not re-checked):
   "InterpolateStrands" in 80 variants, modify, draw, a compute rasteriser),
   then `hair_resolve` and the `TL_PS_PBR_MATERIAL_HAIR` lighting passes;
   the shader code is native, so no constant or texture names can be read.
+- **Hair lighting lookups** (2026-11-24). The deferred hair lighting
+  program (effect `tiled_lighting_standard`, pass
+  `TL_PS_PBR_MATERIAL_HAIR`) reads four lookup textures, program resources
+  `89725666`, `97bcf2fb`, `4e50e024` and `17c3730a`. The graphics texture
+  store holds four lookup textures whose shapes fit these tables, listed
+  in the same order (the texture-to-resource pairing is not checked
+  against the data here): `a08990fd0ae2b38e`
+  (32 × 32 × 32, RGBA16F), `325a463e5738bef9` (32 × 64 × 32, RGBA16F, two
+  tables stacked in Y), `e928838e4c2cb253` (256 × 2, RGBA16F) and
+  `fd954c597b21d41c` (256 × 32 × 8, R16F).
+  - **Model shape** (medium: one program, first light block read): a
+    per-channel absorption from the base colour, σ = 0.0478501 ×
+    ln(colour)², transmittance T = exp(−σ × p) with p from the 256 × 2
+    table's alpha, and reflectance f from its red and green; the terms are
+    f, (1 − f)² T and a geometric series for higher orders, the R / TT /
+    TRT lobes of a fibre model. The two 3D tables give per-light lobe
+    weights at three roughness levels. The 4-bit profile value stored in
+    the G-buffer selects row 0.5 + 0.0266667 × value of the 256 × 32 × 8
+    table (x = colour channel, z = 1 − the first G-buffer value). F0 is
+    0.046461 or 0.00583526, chosen by a flag.
+  - Open: what angle each table axis is, the later light blocks, ambient,
+    the wetness, glint and no-direction variants, which of the four is the
+    lookup the material data names, and a fifth lookup (a 2D texture used
+    as a 16-cube colour map, result × 1/π) that is not identified.
 - **Fur colour:** all 601 fur presets bind the same 16 × 16 marker texture
   (`1ae2616f99a5e7ae`) and a 4 × 16 black normal, so the colour probably
   comes from the body skin at the root UV (inferred). No drawable uses
