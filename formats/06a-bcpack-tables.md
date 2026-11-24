@@ -319,7 +319,7 @@ The probability scale is 65536; because value 0 is reserved, each model's freque
 
 ## 6A.4 Fitted BC3–BC7 tables
 
-(2026-11-23, BC3, BC4, BC5 and BC7 revised 2026-11-24 with the exact rules of [§6.2](06-bcpack.md#62-bc3-blocks-codec-0x0c), [§6.3](06-bcpack.md#63-bc7-blocks-codec-0x1c) and [§6.4](06-bcpack.md#64-bc4-and-bc5-blocks-codecs-0x10-0x14), BC6H refitted 2026-11-24 without the lighting store and then on edge continuity; fitted for this specification against neighbouring mips of retail textures, not extracted; tables medium to medium-low, BC3 least reliable; see [§6.7](06-bcpack.md#67-open-unknowns) for the fit and its accuracy.) A block i with back distance d > i reads preset slot (i − d) mod 256. `-` = a slot no chunk reads, so it has no value. All values are also in [`data/bcpack-fitted-tables.json`](data/bcpack-fitted-tables.json), with a layout line per table.
+(2026-11-23, BC3, BC4, BC5 and BC7 revised 2026-11-24 with the exact rules of [§6.2](06-bcpack.md#62-bc3-blocks-codec-0x0c), [§6.3](06-bcpack.md#63-bc7-blocks-codec-0x1c) and [§6.4](06-bcpack.md#64-bc4-and-bc5-blocks-codecs-0x10-0x14), BC6H refitted 2026-11-24 without the lighting store and then on edge continuity in two passes; fitted for this specification against neighbouring mips of retail textures, not extracted; tables medium to medium-low, BC3 least reliable; see [§6.7](06-bcpack.md#67-open-unknowns) for the fit and its accuracy.) A block i with back distance d > i reads preset slot (i − d) mod 256. `-` = a slot no chunk reads, so it has no value. All values are also in [`data/bcpack-fitted-tables.json`](data/bcpack-fitted-tables.json), with a layout line per table.
 
 Best-determined entries: the BC6H index presets at pixels 0, 2, 8 and 15 (on the 2026-11-23 fit, 720 of the 992 slot / pixel entries read as anchors are pinned to one value by the anchor rule; the 2026-11-24 BC6H refits changed 7 index slots and were not re-counted) and the BC7 index presets (1,166 of 2,942 anchor-read entries pinned). Endpoint presets have no exact check except BC6H no-wrap and BC7 mode 1 p-bit agreement.
 
@@ -577,7 +577,7 @@ Each slot: fields w, x, y, z, each R G B, 16-bit MSB-aligned stored fields, hexa
   2: -
   3: -
   4: -
-  5: 4550 4ef0 3d10 | db00 eb70 1970 | 8000 7ff0 4ef0 | 8000 7ff0 4ef0
+  5: 4570 4230 3d50 | dc00 f510 1130 | 8000 7f90 4f30 | 8000 7f90 4f30
   6: -
   7: -
   8: -
@@ -605,14 +605,14 @@ Each slot: fields w, x, y, z, each R G B, 16-bit MSB-aligned stored fields, hexa
  30: -
  31: c008 8000 6000 | 6308 6880 6800 | 5000 5800 5000 | 5c00 8c00 9000
  32: 4a08 4808 4608 | d400 dc00 d000 | 8000 8000 8000 | 8000 8000 8000
- 33: 2c40 2a00 1e00 | 2000 2000 2800 | f800 e800 f400 | 2000 1c00 2400
+ 33: 2440 2800 1800 | 3400 2400 3000 | 0000 ec00 0800 | 3400 2000 2c00
  34: 5008 4c20 4000 | da40 d900 d800 | f040 ec00 0800 | d040 d400 e000
  35: 5700 5508 4b00 | d350 c030 c7d0 | 2850 3030 08d0 | a850 dc30 c0d0
  36: 4e00 3e00 3c00 | 1000 0c00 dc00 | 8000 8000 8000 | 8000 8000 8000
  37: 7448 7088 7128 | e000 4040 2040 | 2800 2740 2000 | dc00 7840 2000
  38: 7bc0 7b00 7b20 | 3840 d060 b060 | 1040 f7e0 67e0 | 1640 07e0 97e0
  39: 3608 2e00 2200 | 21c0 24c0 32c0 | 2c10 5410 0c00 | 5410 5c10 3400
- 40: 7a70 7ae0 7a20 | 47c0 7100 d900 | d0c0 d000 4000 | 84c0 9000 0800
+ 40: 7ad0 7ae0 7a20 | 41e0 7100 d900 | d0e0 d000 4000 | 84e0 9000 0800
  41: 6100 6248 5cc0 | 17c8 d7b0 cf40 | 14f0 d458 dc00 | d4f0 0458 0000
  42: 9700 7100 5280 | 0000 d800 4880 | 0000 f000 4080 | 0c00 f000 3e80
  43: 0000 7d48 7600 | 09c0 46c0 4000 | 0ac0 70c0 3000 | 0ac0 60c0 9000
@@ -623,15 +623,15 @@ Each slot: fields w, x, y, z, each R G B, 16-bit MSB-aligned stored fields, hexa
  48: be10 cac0 27f0 | 9a50 a230 5310 | ecd0 3330 a890 | ecd0 3330 a890
  49: 6a48 0200 68c0 | 8808 0000 7820 | 7e88 8200 8200 | 7e88 8200 8200
  50: -
- 51: 6be0 8c00 6c00 | 7300 ac00 7040 | 8c00 a000 73c0 | 8400 b000 7bc0
- 52: 3c01 3601 3401 | 24ff 24ff 28ff | 7fff 7fff 7fff | 7fff 7fff 7fff
+ 51: 6c00 8c00 6c00 | 7300 ac00 7040 | 7800 b000 77c0 | 7400 b400 75c0
+ 52: 3c01 3601 3401 | 24ff 24ff 28ff | 2fff 27ff 27ff | 0fff 07ff ffff
  53: 4260 c3c0 3a80 | 0c90 7d00 3240 | 5d10 8000 a940 | 7910 1000 8940
  54: -
  55: 0400 1800 0020 | 0000 7000 0000 | 0000 0000 0000 | 0000 5800 1000
  56: 2880 3b80 2ed0 | e000 8008 4008 | 8000 7300 7d08 | 8000 7300 7d08
  57: 4810 4738 3130 | 4700 1bb8 23c0 | 8000 82b8 81c0 | 8000 82b8 81c0
  58: 7620 78c0 7bb0 | e840 a030 9030 | 1080 50b0 7030 | 1080 50b0 5030
- 59: 5520 5480 4bd8 | f070 3070 2040 | 3870 0c10 10c0 | f0f0 2810 20c0
+ 59: 54c0 5480 4bd8 | f510 30b0 2440 | 4070 1830 1ca0 | f4f0 2430 24a0
  60: 2840 1a40 1840 | 1c40 2440 2c80 | 1c40 1c40 1880 | f440 0c40 0c80
  61: 4fc0 5000 4a08 | e830 e140 d058 | 2030 1840 1c58 | f030 e440 dc58
  62: 5ea0 6f60 70c0 | 3190 3020 e088 | 2000 2020 1860 | 3000 10a0 a8e0
@@ -643,9 +643,9 @@ Each slot: fields w, x, y, z, each R G B, 16-bit MSB-aligned stored fields, hexa
  68: 4c00 4d00 4700 | e840 b880 b840 | 0800 1000 ec00 | e800 b000 b000
  69: -
  70: 4ff0 5008 4808 | e4b0 c0b8 b8b8 | f0b0 e8b8 15b8 | e0b0 b8b8 d5b8
- 71: 67f0 6aa0 6ec0 | 2b80 28e0 3840 | 28f0 2860 28c0 | f8f0 1060 20c0
+ 71: 69d0 6aa0 6ec0 | 2040 2860 38c0 | 2130 2860 28c0 | f130 1060 20c0
  72: 9400 7430 7410 | a800 74c0 7030 | a800 7000 7880 | b000 7000 6880
- 73: c7ef c800 0400 | 5a07 5120 b700 | 8007 8020 8000 | 8007 8020 8000
+ 73: c80f c800 0400 | 5507 5120 b200 | 8007 8020 8000 | 8007 8020 8000
  74: 7a60 7aa0 79e0 | 2000 5080 e000 | 1400 3000 e400 | a400 b380 0c00
  75: 5580 4380 4f00 | 3070 3080 5080 | 7ff0 8000 8000 | 7ff0 8000 8000
  76: -
@@ -658,20 +658,20 @@ Each slot: fields w, x, y, z, each R G B, 16-bit MSB-aligned stored fields, hexa
  83: 2c40 3580 2300 | 3480 3080 38c0 | 2c80 4880 38c0 | 1d80 e080 00c0
  84: -
  85: 69c0 6ce0 7020 | 44a0 2080 3a80 | e820 1020 2400 | 3020 2020 3000
- 86: 24a8 1108 1da8 | 3508 1348 2788 | 1a90 7da8 7de8 | 1a90 7da8 7de8
+ 86: 23c8 1048 1ee8 | 3948 1548 29c8 | 1a90 7da8 7e48 | 1a90 7da8 7e48
  87: 2c08 2a01 1c08 | 3000 1dbf 3008 | ca80 7e3f cd08 | ca80 7e3f cd08
  88: 8000 8000 8000 | 8000 8000 8000 | 8000 8000 8000 | 8000 8000 8000
  89: 5e00 5a00 5480 | 4000 a800 b100 | 0000 2000 4100 | f000 0800 2000
  90: 6d20 ffe0 6a80 | 5d00 4180 7e80 | 8000 8000 8000 | 8000 8000 8000
  91: -
- 92: 3071 2f70 2530 | 625f 3e00 3580 | 85ff 8000 8000 | 85ff 8000 8000
+ 92: 32b1 2fb0 25f0 | 621f 3e00 3580 | 85ff 8000 8000 | 85ff 8000 8000
  93: 6d00 6dc0 7000 | c080 d800 c000 | c000 c800 b800 | 6000 1000 e000
  94: 58e9 3ca0 4ca8 | 496f 2300 5ec0 | 758f 8500 80c0 | 758f 8500 80c0
  95: 5011 5121 4840 | e46f c06f b840 | e86f c4ef c840 | ec6f e9ef 0840
  96: 6c00 6808 4c00 | 6c00 6380 3800 | 6800 5400 1400 | 6800 6800 3880
  97: 3010 2c00 2c00 | 27d0 28c0 2400 | 4410 0000 f400 | 2c10 2800 2000
  98: 8700 8900 8e00 | a000 7780 c000 | 7800 b780 8800 | 9800 0f80 4800
- 99: 6968 67c8 6c80 | 9420 d800 b820 | 0420 e800 d820 | a420 d800 c820
+ 99: 67e8 6768 6c60 | a020 d000 b020 | 1020 e000 d420 | ac20 d800 cc20
 100: 5200 5000 4e00 | 1000 1000 1000 | 3000 3400 3000 | 3400 3800 3400
 101: bf80 2c18 23d0 | 4518 2c78 1b60 | 7ee8 7ef8 7f60 | 7ee8 7ef8 7f60
 102: 6940 6800 6b80 | 4060 2880 6000 | 48e0 2830 4800 | 17e0 f430 e000
@@ -689,7 +689,7 @@ Each slot: fields w, x, y, z, each R G B, 16-bit MSB-aligned stored fields, hexa
 114: -
 115: 6621 6008 5708 | 130f 0868 e828 | 184f 08e8 b8e0 | 104f 09e8 e7e0
 116: 4200 4018 3c10 | 2800 2bb8 2aa0 | 4800 5158 50a0 | 1c00 2158 21a0
-117: 54a8 4a20 4850 | e7d8 d080 d8b8 | ec98 d880 d038 | 0898 2780 4038
+117: 5448 49c0 4810 | ff18 e700 ea38 | ec58 e880 e038 | 0258 3180 3238
 118: c829 c408 3c10 | da0f e430 38f0 | 288f 0030 54f0 | d88f d830 05f0
 119: 4a40 3948 3c40 | 1808 6038 5000 | 1420 5840 5c00 | 14a0 48c0 4c00
 120: -
@@ -751,7 +751,7 @@ Each slot: fields w, x, y, z, each R G B, 16-bit MSB-aligned stored fields, hexa
 176: 2f00 1800 2300 | 6c00 3800 3800 | 6080 0880 f800 | 6200 2c00 3800
 177: 65c8 6948 7200 | 4008 8008 a000 | 8000 8000 8040 | 8000 8000 8040
 178: 8000 8000 8000 | 8000 8000 8000 | 8000 8000 8000 | 8000 8000 8000
-179: 56a0 5500 5180 | 4060 4060 4740 | 38e0 2c60 2060 | cce0 c860 c460
+179: 5680 54c0 5180 | 4780 4780 47a0 | 2ce0 2460 2480 | dce0 d860 d880
 180: 5900 57a0 4f80 | f000 a000 a180 | 0800 1000 1c00 | 0800 1000 2000
 181: 0000 67fc 0000 | afff 8000 8000 | 7fff 8000 8000 | 7fff 8000 8000
 182: 62c0 6289 5fc0 | 3808 307f 3800 | c420 dc07 dc80 | 3c20 2807 2880
@@ -782,7 +782,7 @@ Each slot: fields w, x, y, z, each R G B, 16-bit MSB-aligned stored fields, hexa
 207: 6100 6000 5900 | c6b8 c008 c2c8 | d180 c400 c960 | c180 c400 c160
 208: 2640 1548 10e0 | 1aa0 1020 1100 | 20a0 10a0 1820 | 30a0 1d20 2020
 209: 6200 6200 5c20 | c840 c3c0 bb40 | c000 bc00 b000 | c800 c800 c000
-210: a558 17f0 0ff8 | cb40 1140 1440 | 47c0 1780 0f40 | 6fc0 1f80 0f40
+210: a558 1810 0ff8 | cb40 1040 1440 | 47c0 0f80 1740 | 6fc0 1780 0f40
 211: 6108 6200 5c80 | 2000 2000 2880 | 2800 2800 3000 | 2000 2000 2800
 212: -
 213: 5d80 60c0 58d0 | d980 d280 c308 | e800 e1c0 d060 | e800 e1c0 e260
@@ -792,7 +792,7 @@ Each slot: fields w, x, y, z, each R G B, 16-bit MSB-aligned stored fields, hexa
 217: 5400 5400 4d00 | e610 b900 c000 | ec10 cc00 d400 | e410 bc00 cc00
 218: 5700 5700 5100 | e420 bc00 b800 | 1020 2400 2800 | e820 c400 c000
 219: 5520 5520 5180 | c000 c000 b800 | c000 d000 d000 | b800 d000 c000
-220: 5900 5508 5200 | eca0 b8a0 a800 | 18a0 5020 5000 | 0ca0 2120 4200
+220: 5900 5508 5200 | f160 bd00 ab00 | 1460 4800 5000 | 0860 2100 3a00
 221: 7180 7280 6e40 | 0800 0800 e000 | 0800 0800 c800 | 0800 0000 e000
 222: 6840 6c40 5f40 | 18c8 1040 10c0 | 20f0 20a0 3080 | 18f0 10a0 2080
 223: 4f20 5000 4900 | e0e0 b800 bfe0 | e8e0 c000 c0e0 | 0ce0 1800 50e0
@@ -808,7 +808,7 @@ Each slot: fields w, x, y, z, each R G B, 16-bit MSB-aligned stored fields, hexa
 233: 6a80 6e80 6700 | d800 d800 d000 | c800 c800 b800 | d000 e000 d000
 234: 5900 5ec0 5800 | 2040 18c0 2080 | 3000 2800 2800 | 2000 1800 2000
 235: 5d00 5c80 5880 | 3080 3000 2860 | 40a0 4000 38e0 | 28a0 2800 28e0
-236: 6100 6640 5780 | da80 e00f e070 | c4f0 c017 b090 | ccf0 d717 d490
+236: 5fa0 6620 5780 | e2a0 e10f e170 | c890 c417 b090 | dc90 df17 d090
 237: 5b00 5b00 5500 | e800 d000 c800 | e000 b800 c000 | e800 c800 d000
 238: 5d00 5c08 5608 | e870 d050 d060 | e0e0 c6d0 c060 | e8e0 ced0 d060
 239: 5f10 5da8 5908 | d000 d008 d000 | b8a0 c078 c050 | cfa0 d078 d050
@@ -818,7 +818,7 @@ Each slot: fields w, x, y, z, each R G B, 16-bit MSB-aligned stored fields, hexa
 243: 6008 6000 5800 | e928 e800 e400 | d828 d800 d400 | e628 e400 e400
 244: 3e80 3f80 4900 | 0000 00c0 00c0 | 0000 0000 0000 | 0000 0400 0000
 245: 79a0 79c0 79e0 | 08c0 1040 1040 | 0800 1000 1000 | 0000 0000 1000
-246: 4df8 5410 4a88 | 01c0 2050 1050 | 1040 1010 1350 | 0840 1010 0f50
+246: 4d98 5410 4a88 | 0820 2050 11d0 | 1020 1010 1350 | 0820 1010 0f50
 247: 4e80 55a1 4b20 | 08e0 10df 1000 | 04e0 10df 1000 | 04e0 14df 1000
 248: 7a80 7a80 7b00 | 00c0 00c0 00c0 | 0000 0000 0000 | 0000 0000 0000
 249: 5204 4f00 4d0e | 1404 2800 3002 | 1c04 3800 3002 | 1804 2800 2802

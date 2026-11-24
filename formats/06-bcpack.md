@@ -439,6 +439,40 @@ bit positions and O on the odd ones.
   28.8 dB, so outside that store BCPack BC6H is at plain quality on this
   measure. Open: 20 slots still show a moderate edge excess (0.5 to 1.0
   above normal).
+  *Second edge-continuity pass (2026-11-24; high that the 17 changed slots
+  are an improvement, not that they are exact):* 17 more endpoint slots
+  refitted the same way. Against the first pass: no-wrap violations 288 →
+  85 of 30.2 M table-dependent endpoints; real references unchanged
+  (parent mip 34.1 dB, child mip 32.8 dB); mip check of the 89
+  BCPack-only BC6H textures: mean 30.27 → 30.49 dB, under 20 dB 5.6 →
+  4.5 %, 7 textures better (two by about 9 dB), none worse. **The edge
+  cost alone is not enough to accept a slot:** slots 5 and 85 trade a
+  constant between each other from sweep to sweep, and accepting the pair
+  lowered the edge cost but made two textures worse on the mip check (one
+  by 6.4 dB). So a fit result is kept only if the mip check confirms it
+  per texture; slot 5 was fitted alone with slot 85 held at its earlier
+  value. Negative tests: refitting the BC6H index presets on smoothness
+  found no gain (total cost 1,366,993 → 1,366,947), so the higher inner
+  step of preset-rooted blocks is content, not a table error; a BC7 edge
+  check has little leverage, because nearly every BC7 texture roots all
+  its blocks at one or two slots. Open: 20 slots still 0.5–1.0 above the
+  same-root baseline, 85 wraps, and the coupled pair.
+- **BC7 alpha in the endpoint presets** (2026-11-24; cause high, not yet
+  fixed in the tables of [§6A.4](06a-bcpack-tables.md#6a4-fitted-bc3bc7-tables)):
+  a mip check over the whole install (57 stores, every BCPack texture)
+  finds 93 of 1,433 BCPack BC7 textures with alpha under 25 dB while their
+  colour is fine (6.5 %, against 2.7 % for plain BC7). 91 of the 256 BC7
+  endpoint preset slots carry alpha 0 in every entry, because those fits
+  scored colour only. Blocks whose chain reaches such a slot through alpha
+  modes alone decode alpha about 224–240 too low; chains that pass a
+  three-channel block are unaffected, because those reset the alpha state.
+  A fit of the alpha entries on mip consistency is in progress (a first
+  round moves 42 slots, typically 0 → 224–240). *This qualifies the BC7
+  "alpha in the preset fit" figures under the quality table above: that
+  fit did not reach these 91 slots.*
+- **Full-install colour check** (2026-11-24): share of textures under
+  20 dB, colour only: BC1 BCPack 0.4 % against plain 1.0 %; BC7 BCPack
+  1.1 % against plain 8.3 % (plain baselines include real mip outliers).
 - **Mode 1 p-bits** (2026-11-23, finding only): mode 1 has one p-bit per
   subset, but the stream carries channel 0 of both endpoints with a p-bit
   position; on table-independent chains the two always agree (0 of 247,606
