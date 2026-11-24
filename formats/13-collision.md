@@ -166,6 +166,13 @@ many name spellings and prefixes; GTA V's packed {material index,
 procedural id}. Part of the material list is also missing (holes in the
 dump). No meta resource holds a material enum.
 
+The 214 entries of the public GTA V `MaterialHash` enum do not resolve
+either railway-associated id (`2287` or `4180`), using direct upper-case or
+CamelCase-to-UPPER_SNAKE_CASE spellings (2026-11-23), so the older game's
+list is not a substitute for the missing XML names. *Since answered: the
+two ids are `TERRAIN_GRAVEL_SMALL` and `TERRAIN_GRAVEL_LARGE`, GTA V names
+behind a category prefix that the enum does not carry (see above).*
+
 Shader and parameter names turned out to be plain joaat
 ([§12](12-materials.md)), but the surface ids are not a 15-bit
 shift or fold of it (2026-11-21: 402 material names, as given, lower and
