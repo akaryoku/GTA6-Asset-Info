@@ -405,6 +405,17 @@ are referenced by no preset; `story000` has no material presets.
   the eagle's `…@air@bird@eagle@air@flap@medium/move` and the deer's
   `…@land@mammal@deer@normal@run@fast/move` map 91 % and 97 % of their
   tracks to joints.
+  *Survey (2026-11-24, high, read directly):* 2,709 dictionaries follow
+  `gameplay@creatures@<medium>@<class>@<species>@…`. Of 39 sampled, 31
+  hold animations with bindings; 8 list type-1 clips with 0 bindings and 0
+  animations (denormal durations, no clip names), and where their
+  animation data is stored is open. *The note above says plain `@walk`
+  dictionaries hold clips with no bindings; whether those are among the 8
+  is not checked.*
+- **Binding animal clips** (2026-11-24, high): in an animal's parts each
+  drawable has its own joint list; binding the clip's bone tracks by bone
+  name onto the fragment's skeleton works. On a cat, 85 of 103 bone tracks
+  of a walk clip land on a joint, with 1.50 m of mover travel in 5.33 s.
 - Arcade enemies in `packs.rpf`: `sc_slow_demon`, `sc_fast_demon`,
   `sc_exploder_demon`, `sc_boss_demon` and `sc_alien`, with accessories
   `schornsdemon_*`, `schelmetdemon_*`, `sc(upper|lower)accsdemon_*`,
