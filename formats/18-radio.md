@@ -48,6 +48,56 @@ named by hash `0xA6D93246` in chunk `0xBD` as chapter times. The wave-ID
 and duration match identifies the mix even when a catalogue set-group ID
 gives only the station object.
 
+## Deterministic `GAME.DAT` / `SOUNDS.DAT` (`audMetadataFile` `0x045A88EA`)
+
+On Xbox Series 1.0.2.1 the file groups before the first `ADAT` bank in `audio.rpf` can be identified
+by grouping consecutive 64 KiB inflated chunks until a short chunk ends the group. An
+`audMetadataFile` payload has magic `0x045A88EA` at `+0x08`, after `u32 version` and `u32 meta_size`.
+A zlib-only carve identifies the groups but omits stored chunks. In this build, `SOUNDS.DAT` is
+missing three stored 64 KiB chunks from section 2 when carved that way.
+
+- **Container layout:** metadata body (`meta_size` bytes from `+0x08`), `u32 s1_size` + section 1,
+  `u32 s2_size` + section 2 including its stored chunks, `u32 obj_count` +
+  `(u32 hash, u32 offset)` pairs sorted by `hash & 0xFF`, `u32 pre_ref_count` + `u32[]`, then
+  `u32, u32, u32 ref_count` + `(u32 target_hash, u32)` reference table.
+- **`GAME.DAT`** is identified by `joaat("RADIO_STATIONS_01")` (`type 0x0E`). Walking
+  `RADIO_STATIONS_01`..`16` (`count` byte at `+0x05`, `u32` ref indices from `+0x08`) enumerates
+  `RadioStationSettings` (`type 0x10`) objects:
+  - `+0x01` `u32 flags`: `(flags & 0x30) == 0x10` marks static world emitters (not on the player
+    wheel); `(flags & 0x0C) == 0x04` marks hidden player wheel stations (23 player wheel stations
+    total on the measured build).
+  - `+0x08` `u32 name_hash`, `+0x0C` `u32 wheel_position`, `+0x3C` `u32 tracklist_count` followed by
+    12-byte tracklist entries starting at `+0x40` (first `u32` is the tracklist ref index).
+- **`RadioStationTrackList` (`type 0x11`):** external `ObjectList` (`type 0x02`, `u32 count`
+  at `+0x08`, `u32` refs from `+0x0C`) ref at `+0x44`. If that field is `0xFFFFFFFF`, use the
+  `u16` inline count at `+0x48` and `u32` refs from `+0x4C`.
+  Some tracklists without station references are looked up by hash at runtime.
+- **`RadioTrackSettings` (`type 0x0F`):** for the observed `u32 sound_ref` at `+0x0C`, bit 19 is
+  clear, selecting the reference table. Use `sound_ref & 0x7FFFF` as a zero-based index into
+  `GAME.DAT`'s reference table and read the entry's first `u32` (`target_hash`). Find that hash in
+  `SOUNDS.DAT`'s object table and use its paired offset from the start of the metadata body (`+0x08`
+  in the file). The first byte of the target object is `0x08` (`StreamingSound`).
+- **`SOUNDS.DAT` `StreamingSound` (`type 0x08`) -> `SimpleSound` (`type 0x0C`):** in the
+  observed layout, `u32 duration_ms` immediately precedes `0x0C <child_count> <u32 child_refs...>`.
+  In six checked three-stem mixes, three `SimpleSound` objects immediately follow in metadata offset order.
+  Each holds `(u32 bank_hash, u32 wave_hash)` at `+0x02` (`wave_hash & 0x1FFFFFFF` = AWC stream ID).
+
+The object tables contain 86,715 entries in `GAME.DAT` and 241,999 in `SOUNDS.DAT`. The radio type
+names have precedent in GTA V tooling. The radio type IDs and field offsets here were checked
+against the Xbox build's metadata and lookup code.
+[CodeWalker radio types](https://github.com/dexyfex/CodeWalker/blob/485d56bec00262ed7fa472261cce7bbc6202b96e/CodeWalker.Core/GameFiles/FileTypes/RelFile.cs#L5084-L5086)
+· [Track settings](https://github.com/dexyfex/CodeWalker/blob/485d56bec00262ed7fa472261cce7bbc6202b96e/CodeWalker.Core/GameFiles/FileTypes/RelFile.cs#L5149)
+
+## Track and station text lookup
+
+The radio label formatters reject track numbers `0` and `1` and return `joaat("<N>s")` for the title
+and `joaat("<N>a")` for the artist or show. The game's wildcard text resolver searches loaded
+`globalSearch` blocks in reverse lookup order and moves a matching block to the front of future
+searches. In this build's English data, all 1,703 entries in `trackid` are radio label hashes with
+zero overlap against other eligible tables. Ten titles absent from `trackid` resolve in `GLOBAL`.
+There are 77 empty title entries with nonempty show or host labels. All 23 wheel station display
+labels resolve in `GLOBAL` via `RadioStationSettings.name_hash`.
+
 ## Build a rotating station timeline
 
 | Record | Observed layout relative to its tag |

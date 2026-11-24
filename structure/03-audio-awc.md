@@ -112,16 +112,32 @@ The `0x55` data is `block count` blocks of `block size` bytes; the last
 block is shorter and the data ends exactly at its end (all 3,008 streams).
 Each block:
 
-1. 24 bytes per sub-stream: u32 `0xFFFFFFFF`, u32 count of 2 KiB blocks,
-   u32 0, u32 samples (both channels counted, as above), u32 0, u32 0;
+1. 24 bytes per sub-stream: `u32` `0xFFFFFFFF` (`start_entry`), `u32` count of 2 KiB blocks (`subblock_count`),
+   `u32 skip_samples` at `+0x08`, `u32 block_samples` at `+0x0C` (the block's interleaved sample budget),
+   `u32 0`, `u32 0`;
 2. one u32 seek table per sub-stream: a sample position per 2 KiB block;
 3. padding to 2 KiB;
 4. each sub-stream's 2 KiB blocks in turn, packed like single-channel
    streams (`u16 length + packet`).
 
-A sub-stream's packets run on from one block to the next. Example: stream
-`7a7f000` of the minigame pack is 288 s long; reading the sample count as
-frames gives 576 s.
+Apply a positive `block_samples / packet_channels` frame budget starting at
+the first packet, before removing any leading packets. Keep the packet that
+reaches or crosses the budget and drop later packets in the block.
+
+For a nonzero `skip_samples`, find the leading whole packets whose durations
+sum to `skip_samples / packet_channels` frames. Drop that prefix if its
+packets match the preceding block's budget-retained tail byte-for-byte.
+The reader also accepts the raw skip count in frames when it gives an exact
+match. If neither count matches and the preceding block fell short of its
+budget before prefix removal, subtract that shortfall in frames from
+`skip_samples / packet_channels`. Drop only the leading whole packets whose
+durations sum exactly to that nonnegative remainder. A zero remainder drops
+no packets.
+
+On Xbox Series 1.0.2.1, the combined budget-and-overlap reader recovered four
+banks (three from `audio.rpf`, one from `story000.rpf`). FFmpeg decoded all 11
+stems to the declared `0x48` lengths after Ogg end trimming. Deficit recovery
+ran on three transitions in one bank, each with zero remainder.
 
 ## Markers chunk (`0xBD`)
 

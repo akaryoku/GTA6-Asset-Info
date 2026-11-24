@@ -194,6 +194,17 @@ with the files. Matching them in order against a plain-text content list
 is reported to recover names for some groups (unverified: the list is
 not identified).
 
+### Bink Audio 2.0 bitstream (`KB2n`)
+
+Across the Xbox Series 1.0.2.1 archives in the export sample, 412 audio tracks in 375
+`KB2n` files used 48 kHz stereo DCT coding and parsed as Bink Audio 2.0.
+Band quantizer indices use **7 bits**. In each
+run that carries magnitudes, all magnitudes come first, followed by a sign bit for
+each nonzero magnitude. Repacking widens the indices to 8 bits and interleaves the
+sign bits with the magnitudes, preserving the coded values. Stock FFmpeg
+`binkaudio_dct` decoded all 412 repacked tracks from `BIKi` containers. PCM equality
+with the native Bink 2 decoder is unconfirmed.
+
 ### Decoding
 
 (2026-11-23, high confidence.) A recent open-source Bink 2 video decoder
