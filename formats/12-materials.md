@@ -677,6 +677,50 @@ header (512 bytes: bounds, counts, half-float shape parameters, a 16-byte
 profile curve, no colours). The hair pixel shader reads its two ramp row
 numbers from a 336-byte per-instance record built at run time
 ([shader notes](../structure/06-models-shaders.md#archive-layout-in-detail-2026-11-23)).
+*Refined (2026-11-24): hair items name a hair colour preset through an
+item tag, see the appearance library below; the tag holds a preset name,
+not a colour. The presets were checked on story characters, the
+`ped_tint_hair` rows above on outfit-variation items, so the two readings
+cover different item sets.*
+
+**Appearance library** (2026-11-24). One PSO in `data.rpf`, root struct
+`aa11a32d`, holds these sections by record struct:
+
+| Struct | Records | Contents | Confidence |
+|---|---|---|---|
+| `6f03dd54` | 121 | **hair colour presets**: name (u32 hash); two colours `143a8221` and `88466a37` (RGBA bytes, red in the low byte); `00557ff5` a texture reference {enable, name as a 64-bit texture id}; seven floats `3bcc1228`, `3bfc4600`, `4846a8a9`, `8293a417`, `a43cad33` (1–10, looks like a tiling), `d7eafade`, `f5780677`; a translucency value; flag `e7dff641` | medium-high |
+| `2855f7e3` | 130 | **eye presets**, each with iris and sclera sub-records (texture reference and colour values) | high |
+| `8a641355` | 1,656 | skin overlay layers: texture, UV offset, rotation, scale, opacity, a layer type index | medium on "skin overlay" |
+| `1e875c1c` | 576 | per hairstyle, four named sub-records (struct `88f30612`) | purpose not decoded |
+
+- **Hair presets:** 13 name one of two 256 × 256 single-channel noise
+  textures. 87 have both colours white and the flag set. The other 34
+  include blonde, red, orange, green and teal; story characters use dark
+  low values such as (1, 1, 1) and (19, 13, 10), which fits a
+  light-scattering hair shader. Open: how the two colours mix, the seven
+  floats, and the flag.
+- **Wardrobe links** (item records `f795e8ba`, kit sets `a9d57751`; tag map
+  key → values):
+  - item tag `f7b14eb8` → a hair preset name. On 196 hair items of 70
+    story characters every one names a preset (on the item or a parent),
+    and none stores a tint of its own (palette `ped_tint_generic_clean`
+    with rows 0, 0, 0, or none); they use 9 of the 121 presets (high for
+    these counts).
+  - kit tags `60a7ec66` and `c5984846` → eye preset names; the two are
+    usually equal, probably left and right eye (inferred). 32 distinct
+    values across 70 characters.
+  - kit tag `37192355` → a list of overlay layer names, parallel to the
+    byte list under key `ae947435` of the kit's field `9a289423` (one
+    0–100 value per name; lengths matched on all 201 kits checked),
+    probably a per-layer intensity (inferred).
+  - kit tag `33045a8d` → a list of garment categories, parallel to two
+    byte lists (keys `d0cb1e53` and `fc1147bd`, 0–255 each); meaning not
+    decoded.
+  - item tag `023e5a2f` → the `1e875c1c` records.
+- **Ruled out as the hair colour source:** the item tint bytes
+  (placeholders on story characters), the hair state's material id (binds
+  two textures, no tint), the per-model info table, and the groom header
+  hashes (those are bone names).
 
 **Cut skin meshes** (2026-11-23, confirmed by name listing): besides the
 whole meshes, the packs hold only `hand_<fit>_000_{croptop_a00, tshirt_a02,
