@@ -443,8 +443,37 @@ a separate PSO ([§17](17-other.md#vehicle-handling)).
     black; interior materials). *Correction (2026-11-23): an earlier note
     said 1 of the 17 leaves the rear deck unpainted; that came from not
     following option lists, and all 17 bind it to the body paint.*
+  - **Tyre colour slot** `f3bd038d` (2026-11-24; structure and counts
+    high, read from the library and all configurations; names are exact
+    hash matches): ten parts, each with two modifiers, a binding
+    (`501ff112`) `f21683c1` of group `09f16ade` to channel `976fe07e` at
+    priority 1 with all flags true, and one assignment (`b94308f5`) on
+    channel `976fe07e` with the rubber surface `dfc1c4f8` and one of ten
+    colour records (palette rows 111–121: two greys, purple, magenta, two
+    greens, blue, yellow, orange, red). The group `09f16ade` = [35] is
+    defined (`6225734f`) by the tyre parts themselves; part id 35 is the
+    only part id of all 52 shared `tyre_*_hi` models (shader `99ad6fc9`;
+    its `_lod` variant is `b994d670`). 15 of 4,063 configurations on 5 of
+    373 vehicles fit one (10 red, 5 light grey; 8 colours never fitted),
+    and the tyre colour goes with the wheel paint part of the same
+    configuration, not the body colour. What the game does with it (the
+    whole tyre, one shader layer, or leftover presets) is open, as are the
+    names of `f3bd038d`, `976fe07e` and `09f16ade`.
+  - **Colour-choice slots** (2026-11-24, high): the tyre slot is one of 23
+    slots sharing one named group record (`000639e9`) value, `ca2065a9` =
+    `662b51d9`; the others colour rims with the same palette rows. Slot
+    names by joaat: `tyres` `85be39be`, `tyres_front` `a5fd0d42`,
+    `tyres_rear` `cdad26d9`, `rims` `5fbd8e4d`, `rims_front` `bb36e0ee`,
+    `rims_rear` `cd3c05e8`; `a8167b82` value `e4df46d5` = `default`.
+    *So rims can be recoloured by these slots, which qualifies the
+    "nothing else recolours rims" reading under wheel colours below.*
+  - **`c328e66e`** (5,437 records, referenced only from part modifier
+    lists; inferred from its fields and references): a colour-only channel
+    assignment; 3,842 carry one colour in `c8d27281`, and 1,595 a default
+    plus 19 keyed colours (the keys' meaning is open). *Refines the
+    "channel + mask + level" grouping above.*
   - Open: modifiers `08b2439a` (channel + mask + level on a slot covering
-    all 256 ids, probably dirt), `c328e66e`, `84f5099b`, `1f6c6730`, which
+    all 256 ids, probably dirt), `84f5099b`, `1f6c6730`, which
     option-list entry is used, livery layers, and which configuration a
     spawned vehicle gets.
 - **Wheel colours** (2026-11-23; ids and shared palette high, medium that
