@@ -415,8 +415,8 @@ a separate PSO ([§17](17-other.md#vehicle-handling)).
     colour, so it reads as the body paint (240 of 319 models then gain
     painted panels, e.g. a saloon's rear doors). Colour record `2a13d29a`
     is `black`.
-  - **Option lists** `f5e9d7df` {name, `bf340aab` list of `0caef606`
-    names} (high that they must be followed): a list of parts to choose one
+  - **Option lists** `f5e9d7df` {name, `bf340aab` (`mods`, exact
+    case-sensitive joaat match, 2026-11-24) list of `0caef606` names} (high that they must be followed): a list of parts to choose one
     from (paint finishes, trims, wheel sets: 3 to 10 entries each on one
     sports car). A configuration reaches part of its colour bindings only
     through these lists. Which entry the game picks is unknown.
@@ -551,7 +551,9 @@ prefix state; meaning medium-high, agrees with the pixel shader):
 Selection = palette row, Page = palette array slice. Stem X hashes as
 `boatPrimer` (probable: a two-word hit with about 1 in 250 chance); stem Y
 is unknown (not a lower-case word of up to 9 letters, nor any two-word
-combination of 1,818 words).
+combination of 1,818 words). *Answered (2026-11-24): stem Y is `carPrimer`
+and stem X is confirmed as `boatPrimer`; see
+[names](#names-recovered-by-hash-2026-11-24).*
 
 **Value counts over all 1,851 colour records** (2026-11-23; counts high,
 meaning medium: inferred from the counts and the pixel shader):
@@ -723,6 +725,52 @@ configuration's 64-bit field `395485c9`, a variation set's list `0bf8dac6`
 and the model info's list `cfcf6550` hold asset ids of the vehicle's
 distant models (names ending `_batchlod`), the same MurmurHash3 asset ids
 as `8605bf0e` above.
+
+## Names recovered by hash (2026-11-24)
+
+Exact case-sensitive joaat matches, each re-computed. The method, the odds and
+the rejected matches are in [§8](08-meta.md#names-recovered-by-hash-2026-11-24).
+*single* marks a name with one match and no sibling name, where the fit to
+the field is the only support.
+
+| Hash | Name | Where | Remark |
+|---|---|---|---|
+| `2b490ab7` | `hideBones` | `77f2b89e` list of the stock bones a part replaces | *single*; agrees |
+| `8605bf0e` | `asset` | `77f2b89e` 64-bit value per model | agrees with the asset id reading |
+| `3d37e0df` | `rimRatio` | `9a172293` rim radius ÷ tyre outer radius | *single*; agrees |
+| `e89b8540` | `defaultMods` | part list of a configuration |  |
+| `61e1e572` | `features` | list of modifier records of a `0caef606` record |  |
+| `8e6612bf` | `mod` | part name in a variation set option |  |
+| `662d9b79` | `layoutGroup` | group name in `6225734f` and `501ff112` | *single* |
+| `ca2065a9` | `group` | read above as the channel in `b94308f5` and `000639e9` | GTA V name |
+| `e9bf9f2d` | `indices` | part ids of `6225734f` | agrees |
+| `3acbce85` | `string` | byte array of part ids in `000639e9` | GTA V name |
+| `c8d27281` | `albedo` | binding flag read as colour |  |
+| `7a84e7bf` | `material` | binding flag and assignment field read as surface |  |
+| `75939b79` | `wear` | binding flag; the slot that looks like a dirt level |  |
+| `db4bdec4` | `paintType` | binding flag |  |
+| `a1f60489` | `specular` | binding flag |  |
+| `2c89a8d2` | `defaultAlbedo` | colour record of an assignment |  |
+| `b2e15619` | `defaultSpecular` | assignment field |  |
+| `43394f02` | `albedoTag` | assignment field | *single* |
+| `78476477` | `colorPresets` | part set list that holds the 256 colour entries |  |
+| `9ac2b332` | `matPresets` | part set list that holds the 256 surface entries |  |
+| `aad92e41` | `specularHash` | `3d9aef8b` name of an `e50efcde` record |  |
+| `8576d517` | `materialPresetHash` | `f5908771` surface record name | *single*; agrees |
+| `09bd7c2c` | `liveryControls` | field of `b07176ab` in the companion resource | *single* |
+| `1c9dd6fe` | `truckbed` | mod slot |  |
+| `9bbfb64c` | `body_kit` | mod slot |  |
+| `ac89920d` | `propset_interior` | mod slot |  |
+| `5a4394ab` | `skirt_splitter` | mod slot |  |
+| `c8313558` | `carPrimerSelection` | colour record group Y | stem found on two hashes |
+| `6076324c` | `carPrimerSelectionB` | group Y |  |
+| `52b096c1` | `carPrimerSelectionC` | group Y |  |
+| `adb52ec3` | `carPrimerPage` | group Y |  |
+| `9dad9c4d` | `carPrimerPageB` | group Y |  |
+| `abe838c2` | `carPrimerPageC` | group Y |  |
+
+Stem X re-computes as `boatPrimer` on all six of its hashes, so the three
+groups of a colour record are `albedo`, `carPrimer` and `boatPrimer`.
 
 ## Open questions
 

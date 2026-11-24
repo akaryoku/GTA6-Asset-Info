@@ -1073,6 +1073,26 @@ fallbacks: `c6f46e79` 0 / 150 / 224, `739e3d0d` 0 / 0 / 0, `38ebcdb3`
 85 / 84 / 91, `3c4af3d4` 0 / 0 / 123, `2bb2ede8` 0 / 172 / 128, `4d56d7fe`
 0 / 176 / 129, `1e77bf4c` 127 / 127 / 255, `c8e8c282` 159 / 152 / 145.
 
+## Names recovered by hash (2026-11-24)
+
+Exact case-sensitive joaat matches, each re-computed. The method, the odds and
+the rejected matches are in [§8](08-meta.md#names-recovered-by-hash-2026-11-24).
+*single* marks a name with one match and no sibling name, where the fit to
+the field is the only support.
+
+| Hash | Name | Where | Remark |
+|---|---|---|---|
+| `dc3dfe39` | `PedProfile` | ped model table field read as a character name hash | *single* |
+| `12f85293` | `PropertyTags` | tag map of a preset |  |
+| `9a289423` | `PropertyTagsInt` | second map of a preset |  |
+| `a41d353b` | `LODMask` | in the "Still unnamed" list above |  |
+| `fc7eaa76` | `OutfitKitName` | `a5ea6310` variation id | *single* |
+| `fd540657` | `SurfacePresets` | layered preset map | *single*; agrees |
+| `c897af02` | `Features` | 64-bit id of a layered preset |  |
+| `f08653a5` | `tintoverride` | 16 × vec4 constant block of the animal shader | *single*; fits a block filled with coat colours at runtime |
+| `2f4646cf` | `extinctionlut` | texture slot in the uses-by-slot list | the parameter name of [§11](11-vehicle-paint.md) |
+| `faec4fc8` | `signs_emissive` | shader read above as signs | the shader name listed above |
+
 ## Open questions
 
 - 152 of 229 parameter names (mostly constants), and the four per-layer

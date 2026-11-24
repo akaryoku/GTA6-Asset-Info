@@ -117,6 +117,50 @@ pointers (none seen).
 | 0x05 | embedded struct | confirmed |
 | 0x71 | map (24 B): u64 1, u64 pool reference, u16 count, u16 capacity. The reference points at `count` consecutive entry structs (`00000100`–`00000106`), each {`6098a50e` key (`Key`), `063fa3f2` value (`Item`)}; the entry struct sets the value type (`00000101` = u32 key → u32 array). Empty maps point at block 0. PSO uses code 0x75 instead ([§17](17-other.md#pso)) | confirmed |
 
+## Names recovered by hash (2026-11-24)
+
+88 more field, struct, slot and tag names were found by hashing candidate
+names against the hashes in these notes that had no name (434 at the time).
+Every name is an exact case-sensitive joaat match and was re-computed. The
+tables are on the pages that describe the fields:
+[§7](07-models.md#names-recovered-by-hash-2026-11-24),
+[§9](09-placements.md#names-recovered-by-hash-2026-11-24),
+[§11](11-vehicle-paint.md#names-recovered-by-hash-2026-11-24),
+[§12](12-materials.md#names-recovered-by-hash-2026-11-24),
+[§17](17-other.md#names-recovered-by-hash-2026-11-24) and
+[§19](19-ped-physics-resources.md#names-recovered-by-hash-2026-11-24).
+
+**Candidates.**
+
+- Pairs of the words already used in named fields in these notes (about
+  1,560 words), written `aB`, `AB`, `ab` and `a_b`.
+- A two-word start or end of a known name plus one more word.
+- Known names and words with common affixes (`s`, `Name`, `Hash`, `64`,
+  digits, `default…`, `num…`).
+- A public list of GTA V meta and PSO names, as written, and
+  their frequent words paired with the words above.
+- Sibling patterns of names already found (`…HandlingData`, `guid…`,
+  `PropertyTags…`), with 16,000 words.
+- For stem Y of the colour record ([§11](11-vehicle-paint.md#names-recovered-by-hash-2026-11-24)),
+  pairs of 16,000 words, kept only if two of its hashes agree.
+
+**Odds.** About 76 million candidates against 434 hashes give about 8
+expected chance matches. 13 matches were rejected because the name does not
+fit the field, close to that number: `0b354003` lightfin, `0bf8dac6`
+batchLods, `12803912` boneVariantProps, `135d54f6` positionTexNote,
+`20245319` stateNameRegions, `2316833f` mo_Style, `540ca436` ClockMirror,
+`5a4394ab` FonttexName, `67cbceee` xmaLocation, `93c495af` ClusterData,
+`9a289423` AlbedoArrangements, `9ede7c13` clamptinttexture and `abe838c2`
+RightHeadStrings. Three of those hashes (`5a4394ab`, `9a289423`, `abe838c2`)
+also have a name that fits, in the tables. A row marked *single* in the
+tables (one match, no sibling name) can therefore still be a chance match. Rows without the mark
+are supported by a sibling name, a second hash, or a search too small to
+produce chance matches.
+
+A name was taken as already known when these notes give it beside the hash.
+Some of the names were present in the notes but not tied to their hash (for
+example `albedo`, `material`, `lights`, `entity`).
+
 ## Open questions
 
 - Struct name hashes (in PSO they are 64-bit, [§17](17-other.md#pso)); header field 0x4E.

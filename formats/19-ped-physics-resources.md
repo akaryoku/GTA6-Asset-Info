@@ -517,6 +517,26 @@ files).
   6 mm of one female head mesh, in 128 runs of neighbouring pieces; a run
   is not a style, and style boundaries inside a run are unmarked.
 
+## Names recovered by hash (2026-11-24)
+
+Exact case-sensitive joaat matches, each re-computed. The method, the odds and
+the rejected matches are in [§8](08-meta.md#names-recovered-by-hash-2026-11-24).
+*single* marks a name with one match and no sibling name, where the fit to
+the field is the only support.
+
+| Hash | Name | Where | Remark |
+|---|---|---|---|
+| `2d4958cf` | `shaderId` | registry item field read as the asset type |  |
+| `20bffba8` | `guidHd` | registry item 64-bit value |  |
+| `cb61a7e1` | `guidLd` | registry item 64-bit value |  |
+| `e3da9c8b` | `legacy` | property key that holds the tag hashes |  |
+| `1c114e61` | `facialengine` | tag-map key that lists the drawable on head presets | *single* |
+| `b53667be` | `Category` | slot field of a preset | the field name used in [§12](12-materials.md) |
+| `bf483c65` | `furbody` | slot value |  |
+| `343822c2` | `furhead` | slot value |  |
+| `80c8c1af` | `horns` | slot value |  |
+| `d689b17f` | `Normal` | normal texture field of `147fdab5` |  |
+
 ## Open questions
 
 - The groom ↔ placeholder drawable link for **human** hair (`hair*`,
