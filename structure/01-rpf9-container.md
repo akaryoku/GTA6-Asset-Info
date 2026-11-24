@@ -56,7 +56,7 @@ occur. No file names or directory tree are recoverable from the TOC.
 
 ## Payload
 
-- Not encrypted. Bodies are plain zlib streams, each starting on a 16-byte boundary.
+- Bodies are stored as zlib streams, each starting on a 16-byte boundary.
 - Large resources are stored as **chains of 64 KiB blocks**: a block continues into the next
   stream **iff** it decoded to exactly 65,536 bytes and the next stream begins at the 16-aligned
   slot after the previous compressed stream. There is no flag; the full-block size is the only
