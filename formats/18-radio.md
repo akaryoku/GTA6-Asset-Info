@@ -71,7 +71,7 @@ missing three stored 64 KiB chunks from section 2 when carved that way.
 - **`RadioStationTrackList` (`type 0x11`):** external `ObjectList` (`type 0x02`, `u32 count`
   at `+0x08`, `u32` refs from `+0x0C`) ref at `+0x44`. If that field is `0xFFFFFFFF`, use the
   `u16` inline count at `+0x48` and `u32` refs from `+0x4C`.
-  Some tracklists without station references are looked up by hash at runtime.
+  Some tracklists have no station reference (probably looked up by hash at run time; inferred).
 - **`RadioTrackSettings` (`type 0x0F`):** for the observed `u32 sound_ref` at `+0x0C`, bit 19 is
   clear, selecting the reference table. Use `sound_ref & 0x7FFFF` as a zero-based index into
   `GAME.DAT`'s reference table and read the entry's first `u32` (`target_hash`). Find that hash in
@@ -83,17 +83,13 @@ missing three stored 64 KiB chunks from section 2 when carved that way.
   Each holds `(u32 bank_hash, u32 wave_hash)` at `+0x02` (`wave_hash & 0x1FFFFFFF` = AWC stream ID).
 
 The object tables contain 86,715 entries in `GAME.DAT` and 241,999 in `SOUNDS.DAT`. The radio type
-names have precedent in GTA V tooling. The radio type IDs and field offsets here were checked
-against the Xbox build's metadata and lookup code.
-[CodeWalker radio types](https://github.com/dexyfex/CodeWalker/blob/485d56bec00262ed7fa472261cce7bbc6202b96e/CodeWalker.Core/GameFiles/FileTypes/RelFile.cs#L5084-L5086)
-· [Track settings](https://github.com/dexyfex/CodeWalker/blob/485d56bec00262ed7fa472261cce7bbc6202b96e/CodeWalker.Core/GameFiles/FileTypes/RelFile.cs#L5149)
+names follow GTA V's. The radio type IDs and field offsets here were checked
+against the Xbox build's metadata.
 
 ## Track and station text lookup
 
-The radio label formatters reject track numbers `0` and `1` and return `joaat("<N>s")` for the title
-and `joaat("<N>a")` for the artist or show. The game's wildcard text resolver searches loaded
-`globalSearch` blocks in reverse lookup order and moves a matching block to the front of future
-searches. In this build's English data, all 1,703 entries in `trackid` are radio label hashes with
+A track's title and its artist or show are text labels `joaat("<N>s")` and `joaat("<N>a")` for
+track number N (numbers above 1 seen). In this build's English data, all 1,703 entries in `trackid` are radio label hashes with
 zero overlap against other eligible tables. Ten titles absent from `trackid` resolve in `GLOBAL`.
 There are 77 empty title entries with nonempty show or host labels. All 23 wheel station display
 labels resolve in `GLOBAL` via `RadioStationSettings.name_hash`.

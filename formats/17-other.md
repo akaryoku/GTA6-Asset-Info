@@ -201,8 +201,8 @@ Across the Xbox Series 1.0.2.1 archives in the export sample, 412 audio tracks i
 Band quantizer indices use **7 bits**. In each
 run that carries magnitudes, all magnitudes come first, followed by a sign bit for
 each nonzero magnitude. Repacking widens the indices to 8 bits and interleaves the
-sign bits with the magnitudes, preserving the coded values. Stock FFmpeg
-`binkaudio_dct` decoded all 412 repacked tracks from `BIKi` containers. PCM equality
+sign bits with the magnitudes, preserving the coded values. A standard
+Bink Audio 1.1 DCT decoder decoded all 412 repacked tracks from `BIKi` containers. PCM equality
 with the native Bink 2 decoder is unconfirmed.
 
 ### Decoding

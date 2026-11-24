@@ -120,6 +120,10 @@ Each block:
 4. each sub-stream's 2 KiB blocks in turn, packed like single-channel
    streams (`u16 length + packet`).
 
+A sub-stream's packets run on from one block to the next. Example: stream
+`7a7f000` of the minigame pack is 288 s long; reading the sample count as
+frames gives 576 s.
+
 Apply a positive `block_samples / packet_channels` frame budget starting at
 the first packet, before removing any leading packets. Keep the packet that
 reaches or crosses the budget and drop later packets in the block.
@@ -135,7 +139,7 @@ durations sum exactly to that nonnegative remainder. A zero remainder drops
 no packets.
 
 On Xbox Series 1.0.2.1, the combined budget-and-overlap reader recovered four
-banks (three from `audio.rpf`, one from `story000.rpf`). FFmpeg decoded all 11
+banks (three from `audio.rpf`, one from `story000.rpf`). A standard decoder decoded all 11
 stems to the declared `0x48` lengths after Ogg end trimming. Deficit recovery
 ran on three transitions in one bank, each with zero remainder.
 
