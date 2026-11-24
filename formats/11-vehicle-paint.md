@@ -786,6 +786,11 @@ the field is the only support.
 | `9bbfb64c` | `body_kit` | mod slot |  |
 | `ac89920d` | `propset_interior` | mod slot |  |
 | `5a4394ab` | `skirt_splitter` | mod slot |  |
+| `814a6407` | `brakediscs` | mod slot (disc or drum brake) | see brake slots in [§7.7](07-models.md#77-vehicles) |
+| `ee557cc2` | `brakediscs_rear` | mod slot |  |
+| `98b9b49a` | `calipers_front` | mod slot |  |
+| `c98dbea6` | `calipers_rear` | mod slot |  |
+| `8d48fd33` | `bumper_r` | mod slot | also a bone and group name, above |
 | `c8313558` | `carPrimerSelection` | colour record group Y | stem found on two hashes |
 | `6076324c` | `carPrimerSelectionB` | group Y |  |
 | `52b096c1` | `carPrimerSelectionC` | group Y |  |
