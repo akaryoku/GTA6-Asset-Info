@@ -136,6 +136,47 @@ graphics buffer, by offset in its header. +0x00: four bytes per strand
 grooms seen; +0x1C: eight bytes per strand; +0x34: two f16 per point;
 +0x38: one f16 per point; +0x3C: four bytes per segment. How these map to
 the sections in the table above is not checked.
+*Refined by the strand generation reading below:* +0x0C and +0x28 hold
+threshold bytes for random picks, not a profile.
+
+**Strand generation** (2026-11-24; read from the compute program
+`smh_gen_1:CS_InterpolateStrands` and checked with an interpreter: triangle,
+seed and barycentric weights bit for bit over about 1,600 strands, length
+and positions to the output's quantisation; high unless marked). Offsets
+are in the graphics buffer header, as above.
+
+- **Root triangle:** a strand index tries up to four hashed triangles; an
+  attempt is accepted with probability saturate(density byte × scale). The
+  density byte is byte 0 of the four bytes per root triangle at +0x48;
+  bytes 1–3 are not read by this variant. The strand count and the scale
+  are run-time values. *This conflicts with the B6 row above, which reads
+  byte 0 as the count of strands grown in the triangle (its sum matches
+  sys +0xD0 on 121 of 134 LODs); both readings are kept.*
+- **Cull group:** +0x4C holds one byte per root triangle (0 = never
+  culled), tested against a 256-bit run-time mask (likely the B7 row
+  above, not checked).
+- **Seed** = triangle × 961 + header[0x7C] × 566029 + pick value × 31.
+  Root barycentric weights: 1 − √r1, (1 − r2) √r1, r2 √r1.
+- **Further draws** (a PCG step, multiplier 747796405, increment
+  2891336453): a length factor; a pick against the threshold bytes at
+  +0x28, taken modulo a count in the low byte of +0x54; and a pick
+  against the threshold bytes at +0x0C (three of its four bytes; the
+  fourth is not read) that gives the strand's 2-bit variant. The strand
+  shader uses that variant to choose among four colour ramps.
+- **Length** = barycentric blend of the guides' lengths (+0x30), then
+  varied: k = lowest + draw × (1 − lowest), length += (length × k −
+  length) × amount, with (amount, lowest) the two f16 at +0x60. A length
+  texture can cap it (not exported).
+- **Points** = barycentric blend of the three guides' points, cut at that
+  length; points past the cut repeat the last position. In the rest pose
+  the program's dual-quaternion step reproduces the blend.
+- +0x10 and +0x14: eight bone indices and eight weights per guide
+  (medium). +0x24: four bytes per guide, an angle profile (byte ×
+  0.0246399 − π) for a twist vector written per vertex (low).
+- This variant has no clumping, curl or noise. About 90 variants of the
+  program exist (feature bits in the name; 80 were counted above); the
+  others were not read. Open: the 64-entry table used by two twist modes,
+  three extra f16 per output vertex, and the length texture's content.
 
 **Rendering and parameters** (2026-11-23; measured on 484 sampled grooms,
 not re-checked):
