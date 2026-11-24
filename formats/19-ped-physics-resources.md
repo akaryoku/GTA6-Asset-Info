@@ -232,10 +232,22 @@ not re-checked):
     atlases. Each row holds 4 strand variants × 16 RGBA texels: one atlas
     holds colour ramps, the other parameter ramps, whose red channel feeds
     the lobe roughness slice, green the 4-bit profile value and blue the
-    unlit-side fill. The files that hold the ramp records are not found:
-    none of the decoded meta or PSO files of the main archives has them.
-    The appearance library's hair presets (two colours, eight floats) are
-    a different record; how the two relate is not known.
+    unlit-side fill. The appearance library's hair presets (two colours,
+    eight floats) are a different record; how the two relate is not known.
+  - **Ramp records** (2026-11-24; supersedes the earlier "not found in any
+    meta or PSO file"). The records are binary XML (RBF) files in
+    `packs.rpf`, keyed by text names, in four kinds: colour ramps, colour
+    sets, parameter ramps and parameter sets. Layouts (high):
+    - **Colour ramp:** four RGB stops, three f32 each, as display values
+      (n / 255, no alpha), and one curve.
+    - **Parameter ramp:** one f64 of about 0.0001 to 0.0003 (it reads as a
+      strand width in metres; medium), three multipliers and four curves.
+    - **Curve:** a `vector2_array` of 10 (x, y) f32 pairs.
+    - **Set:** names four ramps, one per strand slot. Fur sets are named
+      per animal model and coat.
+
+    Open: how a hair asset names its sets, which multiplier scales which
+    atlas channel, and the total record counts.
   - **Ambient** (medium, read once): the program scales two screen-space
     lighting buffers written by other passes, which are not identified.
     The coloured side factor is
@@ -248,10 +260,11 @@ not re-checked):
     two ambient buffers hold, the wetness, glint and no-direction variants, which of the four is the
     lookup the material data names, and a fifth lookup (a 2D texture used
     as a 16-cube colour map, result × 1/π) that is not identified.
-- **Fur lighting** (medium): the fur mesh shaders write the ordinary
+- **Fur lighting** (high, confirmed by a second read): the fur mesh shaders write the ordinary
   G-buffer with material type 7, 5 or 0, as clothing and terrain shaders
-  do, while strand hair writes type 6. So mesh fur probably takes the
-  standard material lighting, and only strands use the hair lookups above.
+  do, while strand hair writes type 6. So mesh fur takes the standard
+  material lighting, and only strand hair and strand fur use the hair
+  lookups above.
   Open: what types 5 and 7 mean, and what the fur noise texture does.
 - **Fur colour:** all 601 fur presets bind the same 16 × 16 marker texture
   (`1ae2616f99a5e7ae`) and a 4 × 16 black normal, so the colour probably
