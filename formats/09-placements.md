@@ -250,9 +250,42 @@ Checks against 1.67 M placed world entities:
   holding about equal content (a median of 220–360 entities each), so a
   key is most likely one streamed bundle file.
 
+**Map group ids** (2026-11-24; high that they are switchable map groups).
+This refines the map-group lists above: the four map-group files hold 277
+distinct ids, and not all of them are a map file's `65876a4d`.
+
+| Ids | Match |
+|---|---|
+| 67 | a map file's group field `65876a4d` (map header `d3593fa6`, +0x48) |
+| 21 | a map file's own id `8bfb6095` (`name64`, unique per map file: 23,532 distinct values) |
+| 154 | none of those, but listed in world-state rule PSO files |
+| 35 | found in no meta resource, PSO or other file of any archive |
+
+The world-state rule files (13 PSO files in `levels.rpf`, a few in
+`story000.rpf`) list ids in the Enable and Disable lists of struct
+`9bc15b47` and in the pairs of struct `2d3d070c` (fields `93c31523` and
+`e2554b92`). Ids that match a map file appear in the same fields, so the
+grid's ids are map groups that gameplay switches on and off. The ids that
+no map header carries are mostly Disable targets or the first half of a
+pair; what content they stand for is not known.
+
+**The two 512 m map-group files** (files 4 and 6, high) are byte-identical
+apart from their 75 keys and the 4-byte checksum (304 bytes differ).
+
+**Bundle key: not yet named.** Ruled out:
+
+- a set of map files (only 27 % of map files keep all their entities
+  inside one bundle);
+- a value that any other meta resource or PSO file refers to;
+- joaat of a prefix plus the coordinates, tried with 140 spellings of the
+  coordinates.
+
+It most likely names a streamed file whose name is not yet known (low).
+
 Open: the bundle key's name, what selects the 135-cell subset (mostly
-dense cells, but no clean threshold), and why there are two matching
-512 m map-group files.
+dense cells, but no clean threshold), why there are two matching
+512 m map-group files, and what content the map group ids with no map
+file stand for.
 
 ## Names recovered by hash (2026-11-24)
 
