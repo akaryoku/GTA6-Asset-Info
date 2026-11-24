@@ -217,10 +217,42 @@ not re-checked):
     the G-buffer selects row 0.5 + 0.0266667 × value of the 256 × 32 × 8
     table (x = colour channel, z = 1 − the first G-buffer value). F0 is
     0.046461 or 0.00583526, chosen by a flag.
-  - Open: what angle each table axis is, the later light blocks, ambient,
-    the wetness, glint and no-direction variants, which of the four is the
+  - **Direction and output** (high, a second read of the same program;
+    refines the model shape above): the program's own view vector runs
+    from the eye to the surface and every term uses its negation, so with
+    V taken from the surface to the eye, sin_o = V · T (T the strand
+    tangent) and the azimuth and offset terms use V, not −V. The 256 × 2
+    table is sampled at v = 0.5, the mean of its two rows. The output is
+    exposure × (D × base colour + S), where D is the diffuse-like term and
+    S the specular lobes; the coloured light sum is divided by
+    max(colour, 1e-6) before it goes into D, so the colour cancels there
+    and is applied once. The lobe-widening factor and the unlit-side fade
+    take per-light values set at run time, not stored in the program.
+  - **Ramp atlases** (medium): the strand G-buffer program reads two small
+    atlases. Each row holds 4 strand variants × 16 RGBA texels: one atlas
+    holds colour ramps, the other parameter ramps, whose red channel feeds
+    the lobe roughness slice, green the 4-bit profile value and blue the
+    unlit-side fill. The files that hold the ramp records are not found:
+    none of the decoded meta or PSO files of the main archives has them.
+    The appearance library's hair presets (two colours, eight floats) are
+    a different record; how the two relate is not known.
+  - **Ambient** (medium, read once): the program scales two screen-space
+    lighting buffers written by other passes, which are not identified.
+    The coloured side factor is
+    (1/π + 0.68169 × exp(−7.21348 × g0 × (1 − 0.5 × ((1 − f) + cos_o))))
+    × (0.195 + 0.91 × o) × (1 − Fenv), with g0 the roughness-like G-buffer
+    value, f the table reflectance, cos_o = √(1 − sin_o²), o a 0–1
+    occlusion-like value (its source not traced) and Fenv a reflectance
+    term from an environment table.
+  - Open: what angle each table axis is, the later light blocks, what the
+    two ambient buffers hold, the wetness, glint and no-direction variants, which of the four is the
     lookup the material data names, and a fifth lookup (a 2D texture used
     as a 16-cube colour map, result × 1/π) that is not identified.
+- **Fur lighting** (medium): the fur mesh shaders write the ordinary
+  G-buffer with material type 7, 5 or 0, as clothing and terrain shaders
+  do, while strand hair writes type 6. So mesh fur probably takes the
+  standard material lighting, and only strands use the hair lookups above.
+  Open: what types 5 and 7 mean, and what the fur noise texture does.
 - **Fur colour:** all 601 fur presets bind the same 16 × 16 marker texture
   (`1ae2616f99a5e7ae`) and a 4 × 16 black normal, so the colour probably
   comes from the body skin at the root UV (inferred). No drawable uses
