@@ -200,6 +200,60 @@ files are not grouped by indoor share; "covered" (collision more than 3 m
 above) is 43 % against 20 %. A converter has to use a name heuristic,
 optionally with the covered test.
 
+## 9.6 World sector grids
+
+(2026-11-24; layout, x and y, the 60 m size, the corner origin and the map
+group id high; the bundle reading and 512 / 1024 m rather than 510 /
+1020 m medium.) The first eight PSO files of `levels.rpf` each hold one
+array of struct `9c834886` (root struct `d56f1e2c`). A record is 32 bytes,
+little-endian:
+
+| Off | Field | Meaning |
+|---|---|---|
+| 0x00 | i32 `x` (`9303a5e5`) | cell x |
+| 0x04 | i32 `y` (`80950108`) | cell y |
+| 0x08 | u32 `53149a19` | always 0 |
+| 0x0C | u32 `8fab3f0b` | bundle key (see below) |
+| 0x10 | u32 `56f5c799` | index in the bundle |
+| 0x14 | — | padding |
+| 0x18 | u64 `f24b342d` | 0, or a map group id |
+
+Cell = floor(world position / cell size), with the origin at the cell
+corner. The cell size is not stored. There are three sizes, 1024, 512 and
+60 m. Each has a **cell list** (64-bit field 0, each cell once) and a
+**map-group list** (64-bit field = the map files' 64-bit field
+`65876a4d`, listed once per cell the group's entities reach).
+
+| File (archive order) | Records | Size | Kind |
+|---|---|---|---|
+| 1 | 204 | 1024 m | cells |
+| 2 | 63 | 1024 m | map groups |
+| 3 | 765 | 512 m | cells |
+| 4 | 75 | 512 m | map groups |
+| 5 | 135 | 512 m | cells, a subset of file 3 |
+| 6 | 75 | 512 m | a copy of file 4 with different keys |
+| 7 | 26,212 | 60 m | cells: the world grid |
+| 8 | 3,269 | 60 m | map groups |
+
+Checks against 1.67 M placed world entities:
+
+- **60 m world grid:** 94.3 % of entities fall in a listed cell, and
+  96.8 % of cells hold one (at 64 m: 87.8 % and 96.0 %).
+- **Map groups:** for 37 of 46 ids the listed cells are exactly the cells
+  under the map files' entity extents at 60 m; every other size from 54 to
+  67 m scores 7 or fewer, and a half-cell shift scores 5, so the origin is
+  the corner.
+- **Coarse sizes:** fits peak at 510–512 m (21 of 25) and 1020–1024 m (23
+  of 25); the powers of two are taken.
+- **Bundle key:** in the world grid, records are sorted by the text of x
+  and then y, and the keys split that order into runs of 1–63 cells
+  holding about equal content (a median of 220–360 entities each), so a
+  key is most likely one streamed bundle file.
+
+Open: the bundle key's name, what selects the 135-cell subset (mostly
+dense cells, but no clean threshold), and why there are two matching
+512 m map-group files.
+
 ## Open questions
 
 - The name and meaning of `84799847`.
@@ -207,6 +261,7 @@ optionally with the covered test.
 - The 64-bit per-archetype hash at entity +0x08.
 - Where prefab groups (`35abc248`) are placed.
 - 785 map files whose parent hash does not resolve.
+- The world sector grids' bundle key names and the 135-cell subset ([§9.6](#96-world-sector-grids)).
 
 
 ---
