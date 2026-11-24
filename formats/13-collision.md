@@ -131,6 +131,29 @@ The 31 `TERRAIN_*` materials are `TERRAIN_CORAL`, `_DIRT_COMPACT`,
 `DEFAULT` is the first material of GTA V's material list; it is not in the
 readable XML, so it is a hash match only.
 
+*`DEFAULT`* (2026-11-24; high): `elf("DEFAULT")` gives id **`0x317b`**, the
+generic default surface of [§13.3](#133-inferred-surface-categories) (about
+39 % of collision area). Found by testing 177 GTA V material names
+(`materials.dat` spellings) against the three ids §13.3 describes; chance
+of a hit on one of them is about 177 × 3 / 32749 ≈ 0.016, and the meaning
+fits. No GTA V name (including `GRAVEL_SMALL`, `GRAVEL_LARGE`,
+`GRAVEL_DEEP`, `GRAVEL_TRAIN_TRACK`) gives `2287` or `4180`.
+
+*`TERRAIN_GRAVEL_SMALL` and `TERRAIN_GRAVEL_LARGE`* (2026-11-24; high) give
+ids **`0x2287`** and **`0x4180`**, the two gravel ids of
+[§13.3](#133-inferred-surface-categories). Found by testing 8,862 names
+built as prefix + word + suffix from ground and gravel words against those
+two ids (0.54 chance hits expected). The only two hits are the GTA V names
+`GRAVEL_SMALL` and `GRAVEL_LARGE` behind one prefix, one on each id; a
+matching pair like that by chance is well under 1 in 100. So some materials
+are a GTA V name behind a category prefix (`TERRAIN_` here; `ROAD_TARMAC` is
+GTA V's `TARMAC` behind `ROAD_`). That gives candidates for the ids still
+unnamed: every prefix seen in the readable XML × the GTA V `materials.dat`
+names. With 168 ids open one candidate in about 195 hits by chance, so
+matches need the same area and category checks as above. Not run here: the
+list of unnamed ids is not in these notes.
+*Two readings of `DEFAULT` are kept: high in the note just above (the name fits the generic default surface), and a hash match only in the list before it (the name is not in the readable XML).*
+
 The remaining ids are most likely materials from the unreadable parts of
 the XML: its first block (file offset `0x20f000`–`0x210a62`) is neither
 zlib nor raw deflate at any start offset, and the block at `0x212190`

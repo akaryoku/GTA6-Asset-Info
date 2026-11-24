@@ -632,8 +632,8 @@ class `0x24749343`, whose instance stride is `0x18`:
 
 | Offset | Type | Meaning |
 |---|---|---|
-| `+0x08` | `u32` | Dictionary/set hash; descriptor field hash `0x25de16df`, type `0x4a` |
-| `+0x0c` | `u32` | Clip stem hash; descriptor field hash `0x24fc8f24`, type `0x4a` |
+| `+0x08` | `u32` | Dictionary/set hash; descriptor field hash `0x25de16df` (`clipDictionaryName`), type `0x4a` |
+| `+0x0c` | `u32` | Clip stem hash; descriptor field hash `0x24fc8f24` (`clipName`), type `0x4a` |
 | `+0x10` | `u32` | Flag; observed 695,621 times as 1 and 10,644 times as 0 |
 | `+0x14` | `u32` | Observed zero |
 
@@ -1283,6 +1283,31 @@ follows from the text. Copies of one table sit at fixed strides through
   `data.rpf@19621d0` has 5 strings (three arcade titles); `data.rpf@19be010`
   is the big general table (36,888 strings). The puzzle table was only
   reachable once multi-block tables were read correctly (above).
+
+## Names recovered by hash (2026-11-24)
+
+Exact case-sensitive joaat matches, each re-computed. The method, the odds and
+the rejected matches are in [§8](08-meta.md#names-recovered-by-hash-2026-11-24).
+*single* marks a name with one match and no sibling name, where the fit to
+the field is the only support.
+
+| Hash | Name | Where | Remark |
+|---|---|---|---|
+| `93db5464` | `HandlingName` | name hash of a handling row | GTA V name; agrees |
+| `b4e0f8b0` | `ChassisHandlingData` | handling component read as body |  |
+| `6fdd2f18` | `DrivetrainHandlingData` | component read as transmission |  |
+| `88d3a1a3` | `EngineHandlingData` | component read as engine |  |
+| `70317f27` | `FuelHandlingData` | component read as fuel |  |
+| `edf48412` | `WheelsHandlingData` | component read as wheels, steering and brakes |  |
+| `c746f5ed` | `SuspensionHandlingData` | component listed as unknown |  |
+| `bdaf2dc0` | `SuspensionInfo` | component read as suspension |  |
+| `e54c8bcf` | `airboat` | `gameName` value of the `airgator` row | *single*; a value, lower case |
+| `7c0a2099` | `fpsClip` | second clip reference at `+0x68` | *single* |
+| `f791a95f` | `bonetranslation` | track property, XYZ local translation | agrees; sibling of `bonerotation` |
+| `2deefadd` | `genericcontrol` | track property seen with kinds 4, 2 and 0 | *single*; agrees with "can target controls" |
+| `74d00508` | `propertydesc` | pose-rig section of 5 named blocks |  |
+| `6257c371` | `propertydata` | pose-rig section read as the rig path |  |
+
 
 ---
 

@@ -254,6 +254,27 @@ Open: the bundle key's name, what selects the 135-cell subset (mostly
 dense cells, but no clean threshold), and why there are two matching
 512 m map-group files.
 
+## Names recovered by hash (2026-11-24)
+
+Exact case-sensitive joaat matches, each re-computed. The method, the odds and
+the rejected matches are in [§8](08-meta.md#names-recovered-by-hash-2026-11-24).
+*single* marks a name with one match and no sibling name, where the fit to
+the field is the only support.
+
+| Hash | Name | Where | Remark |
+|---|---|---|---|
+| `8bfb6095` | `name64` | 64-bit id of an archetype and of a parent map file |  |
+| `e5cdb664` | `parent64` | 64-bit parent of a map file | agrees: it equals the parent's `name64` |
+| `6c0f9c8c` | `regionCode` | map-data region field | *single*; agrees |
+| `84799847` | `parentDep` | the −1 to 10 entity field of [§9.2](#92-lod-hierarchy-confirmed) | *single*; see below |
+
+`parentDep` is −1 on every ORPHAN_HD and SLOD4 entity, the two kinds with no
+parent. If "Dep" stands for dependency, the value may be the index of the
+parent's map file in a dependency list of the child's file, which would name
+the parent file directly instead of the inferred rule under
+[Resolving LOD parents](#resolving-lod-parents). Not tested: it needs a check
+that the value stays below the length of such a list in every file.
+
 ## Open questions
 
 - The name and meaning of `84799847`.
