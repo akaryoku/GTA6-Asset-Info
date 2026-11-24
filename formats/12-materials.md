@@ -982,6 +982,23 @@ field `aadeb53e` are still unnamed; `c897af02` is `Features`.
 This is the only stored link found between the cutscene prefixes
 `cs_lucia` / `cs_jason` and the protagonist models.
 
+**Character table and display names** (2026-11-24; high for the label
+link, checked on 25 sampled characters). The main data archive holds a PSO
+character table: struct `691f01d2`, 3,689 records, 58 fields. `Name` and
+field `dc3dfe39` (`PedProfile`) hold joaat of the character name, and
+field `f249cb70` holds a text label hash (set on 427 records, 302 distinct
+labels) whose string in the text tables is the name shown in game. A ped
+model reaches it through the `dc3dfe39` field of the table above. Open:
+the other fields of the record, and which text table is which language.
+
+**Ped model names** (2026-11-24, high for the counts). The outfit list
+stores only joaat of the model name; 581 of 2,713 names are recovered. A
+control search with prefixes no ped model uses gives as many hits as the
+ambient prefixes (87 M candidates: 29 real, 45 control), so ambient model
+names cannot be recovered by word search. Models come in numbered families
+(`_00` to `_09`), so one chance match of the hash state before the number
+hits a whole family.
+
 ### Animal shader `ped_standard_animal`
 
 (2026-11-23.) On shader `295b85a9` the colour slot can hold a **region

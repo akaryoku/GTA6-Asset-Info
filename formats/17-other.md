@@ -1008,6 +1008,17 @@ at run time (inferred). One apparent path match
 3.5 million candidates against 1,256 hashes give about one by chance, and
 no second match appeared (refuted). Open: the garment rig path pattern,
 which rig goes with which garment, and the other 980 rigs' block types.
+*Revised (2026-11-24; high for the counts, medium for "per garment"): all
+1,256 rigs are `RIG0`, with 33 block types, of which 4 are decoded (0x85,
+0x46, 0x81, 0x86, below); the 276 / 980 split above came from a reader
+that knew only those 4. 401 rigs drive clothing helper bones (`GM_*`), not
+105, and their float inputs are the body-shape control hashes of the body
+rig; several other inputs are not body controls. Clothing uses 128
+distinct helper cages (bone names plus rest positions) across about 5,500
+drawables. Rigs that drive the same bone set differ by 5–15 cm, so they
+are per garment or garment group. How a garment selects its rig is still
+open (the keys are path hashes and no pattern is found), as are the 29
+undecoded block types.*
 
 A rig is wrapped as `RIG` + byte 0x02, a u32 size (= the inner blob's
 size), and the `RIG0` blob at +0x100: version bytes, size, a section count
@@ -1054,7 +1065,7 @@ u32 flags} (inferred). They are the soft-body variant of the cloth
 resources in [§19.3](19-ped-physics-resources.md#193-cloth-type-2) (702 resources).
 
 Open: the exact 0x46 / 0x81 ops, the lower-LOD rigs, the input names, the
-non-`RIG0` rigs (see the survey above), and
+29 undecoded block types (see the survey above), and
 why the belly spikes on some male T-shirts whose palettes name bones in
 neither skeleton.
 
