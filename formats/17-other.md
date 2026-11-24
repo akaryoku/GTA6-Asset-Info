@@ -5,7 +5,7 @@
 | Format | State |
 |---|---|
 | PSO (`PSIN`; sections LSCH/LENM/LSNS/LGID/LRSC/CHKS) | **decoded** (2026-11-21): the plain-file form of the meta format of [§8](08-meta.md). Section headers are big-endian; the block table and references are little-endian; the `LSCH` schema names fields with 32-bit joaat (struct names are 64-bit). 2,225 of 2,281 files in `data.rpf` decode. See [PSO](#pso) and [Vehicle handling](#vehicle-handling) |
-| RBF (`RBF0`) | a new variant with u16 indices and inline names; exported raw |
+| RBF (`RBF0`) | binary XML with u16 tags and inline names; tag encoding read (high). See [RBF0 binary XML](#rbf0-binary-xml) |
 | `*_bvh4.rpf` | dehydrated GPU acceleration structures and a mount manifest. See [GPU BVH4](#gpu-bvh4) |
 | XML, text | plain; exported as is |
 | shaders (`shaders.rpf`) | compiled cache and DXBC-wrapped native shader programs. See [structure/06](../structure/06-models-shaders.md) |
@@ -1159,6 +1159,25 @@ pack has no timecycle data.
 
 Open: the run-time strength and blending of modifiers, the second number
 and `userFlags`, and what the engine does with each variable.
+
+## RBF0 binary XML
+
+(2026-11-24; high, the strand tables of
+[§19](19-ped-physics-resources.md) parse to the last byte with it.) The
+body after the `RBF0` magic is a stream of little-endian u16 tags. A tag is
+name index | type << 12. The first time an index is used, its name
+follows the tag as a u16 length and the text.
+
+| Type / tag | Payload |
+|---|---|
+| 0 | element: six more bytes, the last u16 the attribute count |
+| 1 | i64 |
+| 2, 3 | boolean |
+| 4 | f64 |
+| 5 | three f32 |
+| 6 | string: u16 length and text |
+| `fffd` | text content: u32 length and text |
+| `ffff` | close the current element |
 
 ## Script data documents
 
