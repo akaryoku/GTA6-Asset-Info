@@ -208,6 +208,29 @@ above, with `0cd27763` an array texture in p6.
   lookup.b), saturate(1 − C.r − C.g − C.b), C.a). R weights layer 0, G
   layer 1, B layer 2 and w3 layer 3. *This confirms the seam test and the
   layer 3 remainder above, and adds the vertex colour override.*
+- **Vertex weights on real meshes** (2026-11-24; high for the counts,
+  medium that the second colour stream is the shader's C: one program's
+  input list names it as the second colour input and the data behaves
+  like weights, while the most used variant's own program packs its
+  inputs without names; not compared with a rendered image). C is the
+  mesh's second RGBA8 colour stream (stream slot 12, [§7](07-models.md)):
+  rgb are the weights of layers 0, 1 and 2 (the remainder is layer 3) and
+  alpha is how much they replace the lookup texture's weights. Over 14 map
+  section tiles, about 150,000 four-layer vertices: alpha is 255 on 98.4 %
+  of the vertices of the most used variant (`standard_uber_4lyr_dpm_dm_hbb`)
+  and on 58–100 % for the eight other variants, 0 on 0–20 %, and values in
+  between occur. r + g + b ≤ 258 of 255 on seven of nine variants; on the
+  two `spx_dm_hbb` variants 149 of 41,812 vertices exceed it. On one tile
+  compared in detail, the lookup texture sampled at each vertex's first UV
+  has the same dominant layer as the vertex weights on only 20–59 % of
+  vertices per material, so the lookup is not a copy of the vertex
+  weights, and where alpha is 255 it is not used.
+  *This conflicts with the render check below, which reads the weights
+  from the lookup texture alone (high there, from footage); both readings
+  are kept until a render with the vertex weights is compared.*
+- **First colour stream** (2026-11-24, shader reading; values measured):
+  rgb is a vertex tint, which the shader decodes from sRGB, and alpha its
+  blend amount; values seen are rgb about 60–125 of 255 and alpha 50–255.
 - **Per layer**, in order: its data map (layer 0 `3022de38`, 1
   `42110214`, 2 `0cd6179f`, 3 `3ea37b39`, as in the pairing above), its
   colour texture, the shared array `0cd27763`, its normal map.
