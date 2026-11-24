@@ -381,7 +381,9 @@ a separate PSO ([§17](17-other.md#vehicle-handling)).
   `c328e66e`, `84f5099b`, `1f6c6730`, `08b2439a` (channel + mask + level;
   slot `75939b79` covers all 256 ids and looks like a dirt level); `f5e9d7df`
   (a list of further records); `51aab7c1` / `44cc9d8c` / `d62c0436` /
-  `ed9cf5df` (livery and decal layers with texture hashes).
+  `ed9cf5df` (livery and decal layers with texture hashes). *Revised:
+  `51aab7c1` is a typed reference to a library part, not a livery layer;
+  see the typed reference below.*
 - **Modifiers in detail** (2026-11-23; refines the bullet above):
   - **Where** (high): the part list names `0caef606` records both in the
     library (32,804) and in the vehicle's own pack (142 in one saloon's
@@ -418,6 +420,22 @@ a separate PSO ([§17](17-other.md#vehicle-handling)).
     from (paint finishes, trims, wheel sets: 3 to 10 entries each on one
     sports car). A configuration reaches part of its colour bindings only
     through these lists. Which entry the game picks is unknown.
+  - **Typed reference** `51aab7c1` (2026-11-24): 1,235 records in the
+    library, fields name (u32), data (u32) and type (an enum, tags 0–5).
+    A part's modifier list (`61e1e572`) can name one. Counts by tag: 0: 580,
+    1: 2, 2: 153, 3: 197, 4: 105, 5: 198. With **type 5**, data is the name
+    of a library part (`0caef606`; 197 of 198 resolve), and that part's
+    modifiers come along with the part that names it (high for "names a
+    library part"; medium for "its modifiers apply": one kit renders
+    correctly, and following these references changed the default colours
+    of 56 of 320 vehicles, none worse in six spot checks). Example: a body
+    kit part defines a group of part ids for its panels (`6225734f`) and,
+    through a type 5 reference, names a colour-scheme part whose bindings
+    (`501ff112`) bind that group to the paint channel. Types 0 and 1 also
+    hold library part names in data; types 2–4 do not. Open: what types
+    0–4 mean, and which binding wins when a referenced scheme and a
+    configuration's own scheme bind the same group at the same priority
+    (taking the later one in list order works but is not confirmed).
   - **Configurations differ** (medium-high): following the first entry of
     each option list, one sports car's 17 configurations give 16 distinct
     results (paint; a roof that is either fixed colour record `a4a56fb8`,
