@@ -266,6 +266,39 @@ above, with `0cd27763` an array texture in p6.
 - **Detail array** `0cd27763` (slot p6, 2026-11-24, medium): sampled per
   layer, with a per-layer slice taken from a constant. RG is a detail
   normal (× 2 − 1), and B a brightness term around 0.5.
+- **Tint** (2026-11-24, medium: the family's base pixel program read once;
+  the most used variant has the same code shape, not re-read; not compared
+  with a rendered image). Constants in the material's second constant
+  buffer. Per layer k (vec4s, one component per layer): `8e3fb0aa` texture
+  tint mode (1 multiply, else luminance), `tintintensity` (`db26e4de`),
+  `tintblendamount` (`1caef69a`), `b1c84936` vertex tint mode (1
+  multiply), `verttintintensity` (`81bc5bca`) and `896d1e47` a mask scale.
+  Scalars: `3fb2b8f7` vertex tint on, `834fb13b` second vertex tint form,
+  `abe2c64d` blend amount scaled by the mask. With D the layer colour, a
+  the data map alpha, C the first vertex colour rgb (decoded from sRGB), T
+  the tint texture rgb, blend = `tintblendamount`[k], mode =
+  `8e3fb0aa`[k] and lum = 0.2125 r + 0.7154 g + 0.0721 b:
+
+  ```text
+  m  = saturate(((blend > 0 and mode == 0) ? 1 - a : a) * 896d1e47[k])
+  V  = b1c84936[k] == 1 ? saturate(C * verttintintensity[k] * D)
+                        : C * verttintintensity[k] * lum(D)
+  Dv = mix(D, V, m)
+  D1 = 3fb2b8f7 ? Dv : D
+  W  = mode == 1 ? saturate(T * tintintensity[k] * D1)
+                 : T * tintintensity[k] * lum(D1)
+  t  = abe2c64d != 0 ? saturate(a * blend) : blend
+  D2 = mix(D1, W, t)
+  colour = mix(D2, Dv, vertex colour alpha)
+  ```
+
+  Second form (`834fb13b` ≠ 0): Dv = D + (mix(C × intensity × lum(D),
+  saturate(D × C), the third vertex colour set's blue) − D) × m. Over 203
+  materials on 14 tiles the switches (`3fb2b8f7`, `834fb13b`, `abe2c64d`)
+  are (1, 0, 1) on 189, (0, 0, 1) on 10, (1, 0, 0) on 3 and (1, 1, 1) on 1;
+  `tintblendamount` is all zero on 59. Open: switch `7a090c2a`, and the
+  tint's effect on normal and roughness. *This gives the maths the render
+  check below leaves open (its `colour × tint × 2` was a visual fit).*
 - **Constants** (medium): the vec4s are per layer (x = layer 0 … w =
   layer 3), among them `tintintensity`, `tintblendamount`,
   `verttintintensity` and `bumpiness`. A layer picks one of two UV sets by
