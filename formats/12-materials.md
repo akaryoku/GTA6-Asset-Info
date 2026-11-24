@@ -149,6 +149,45 @@ data map goes with one layer's diffuse in every material, 7/7 to 13/13):
 A slot is a layer **index**, not a surface type: one texture can be layer 1
 in one material and layer 3 in another.
 
+**Variants** (2026-11-24). `standard_uber_4lyr` and 17 suffixed variants
+all have the same 17 texture slots in the shader tables (high, read from
+the tables). Name hashes (joaat of `standard_uber_4lyr` plus the suffix):
+
+| Suffix | Hash | Suffix | Hash |
+|---|---|---|---|
+| (none) | `88a32075` | `_mud_dm_hbb` | `6f968246` |
+| `_dfm_dm_hbb` | `388f8fb6` | `_mud_dm_hbb_uv3` | `1ae17fd6` |
+| `_dfm_dm_hbb_uv3` | `f8e1f225` | `_pxm` | `5a71e7e1` |
+| `_dpm_dfm_dm_hbb` | `61fad45c` | `_pxm_hbb` | `4a579bbf` |
+| `_dpm_dfm_dm_hbb_uv3` | `40497278` | `_pxm_hbb_fixuv1` | `b21f1ba5` |
+| `_dpm_dm_hbb` | `61e09df7` | `_pxm_hbb_uv3` | `27e5c49d` |
+| `_dpm_dm_hbb_uv3` | `0ad54cb9` | `_pxm_uv3` | `10098c2c` |
+| `_hbo_dm_hbb` | `d5bdc029` | `_spx_dm_hbb` | `360e396b` |
+| `_uv3` | `7543cefc` | `_spx_dm_hbb_uv3` | `76fcff28` |
+
+- **Programs** (medium: compared by code shape, not line by line): each
+  variant has its own main pixel program. For nine variants it was
+  compared with the one read in full ([below](#from-the-shader-code)):
+  same per-layer UV selection, tint code and height-blend code.
+- **UV selection:** constant `724bed95` per layer, 1 = first UV input,
+  2 = second; the same code with and without `uv3`. Only 1 and 2 occur on
+  203 materials. The second UV input is the mesh's second UV set (medium,
+  from texel density, not from code): 3–6 m per UV unit on every variant
+  over 14 map tiles, while the third set is 40–100 m per unit.
+- **Constants:** the per-layer height-blend switch `f24b51f2` exists only
+  in `dpm` variants, and variants without `hbb` in the name lack the
+  height-blend constants `03754af2`, `b2339a6c` and `blendsoftness`
+  (which supports reading `hbb` as height-based blend; the suffix letters
+  are otherwise not known).
+- **Extras:** `uv3` programs take a second tangent frame; `dfm` programs
+  read three more engine-supplied textures (9 more samples); `pxm` has 8
+  more gradient samples and `spx` 4 more samples than `dpm`.
+- Open: the mesh programs were not readable, so which mesh stream feeds
+  which input is not from code; what the third UV set of `uv3` meshes
+  feeds; the use of the `dfm`, `pxm` and `spx` extras; whether the height
+  blend is always on where the switch is missing; nine variants are on no
+  surveyed tile (tables only); nothing compared with a rendered image.
+
 - **Weights** (measured): the lookup is one BC7 2048² texture per 512 m
   section on TEXCOORD_0, which is exactly section position / 512 on all
   primitives. Alpha is 255; R + G + B ≤ 255 (99th percentile 258 from BC7
