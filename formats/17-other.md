@@ -981,6 +981,23 @@ pointer to the rig), u64 next}. Body rigs include
 `Dancer_Body_Shapes_Female`, `BreathingStyle0_Body_Shapes_Female`, XXL and
 bodybuilder variants and garment rigs (`*_Garment_Shapes_Female`).
 
+*Rig dictionary survey (2026-11-24, high, read directly):* the 1,256 rigs
+of the generated dictionary sit in 1,291 (0x50B) buckets. Only 276 of them
+are `RIG0` blobs as described below; the other 980 use other block types,
+not decoded. Of the 276, 105 have tracks on the garment girth helper
+bones (`GM_U01_*`): 9–153 such tracks per rig, 2–40 float inputs and
+39–1,023 registers, and many also drive bones whose names are not yet
+known. The two body-shape rigs (female 360 tracks, male 379, 53 inputs
+each) drive only `BM_` / `MH_` style bones. No rig path hash occurs in the
+wardrobe resources, in a garment drawable's system data, or in any PSO,
+RBF or XML entry of the four main archives, and the wrapper and its
+0x100-byte header hold no name string, so the game builds the lookup path
+at run time (inferred). One apparent path match
+(`…/male/components/lod0_<drawable>`) was a chance joaat collision: about
+3.5 million candidates against 1,256 hashes give about one by chance, and
+no second match appeared (refuted). Open: the garment rig path pattern,
+which rig goes with which garment, and the other 980 rigs' block types.
+
 A rig is wrapped as `RIG` + byte 0x02, a u32 size (= the inner blob's
 size), and the `RIG0` blob at +0x100: version bytes, size, a section count
 at +0x10 and section offsets from +0x14. Sections are tagged {u32 type hash,
@@ -1025,7 +1042,8 @@ references are soft-body / secondary-motion data, not body shape: particles
 u32 flags} (inferred). They are the soft-body variant of the cloth
 resources in [§19.3](19-ped-physics-resources.md#193-cloth-type-2) (702 resources).
 
-Open: the exact 0x46 / 0x81 ops, the lower-LOD rigs, the input names, and
+Open: the exact 0x46 / 0x81 ops, the lower-LOD rigs, the input names, the
+non-`RIG0` rigs (see the survey above), and
 why the belly spikes on some male T-shirts whose palettes name bones in
 neither skeleton.
 
