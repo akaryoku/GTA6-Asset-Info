@@ -479,8 +479,18 @@ bit positions and O on the odd ones.
     48 textures and worse on 3; textures under 25 dB alpha 93 → 66, under
     20 dB 76 → 49. About 39 of the 66 are expected from content (2.7 % of
     plain BC7 textures are under 25 dB).
-  - Open: 9 more slots from a later round are being checked; about 10
-    slots have conflicting evidence and stay unchanged.
+  - **Second round** (2026-11-24; medium-high, fitted, each slot confirmed
+    per texture): 9 more slots (31, 62, 71, 95, 107, 209, 219, 229, 248),
+    some raised and some lowered. Blocks whose reference mip starts at the
+    same preset slot are left out of the fit, because both sides shift
+    together and carry no information. Against the first round: colour
+    unchanged; alpha better by more than 1 dB on 34 textures and worse on
+    1; under 25 dB 66 → 46, under 20 dB 49 → 29. The fit has to run in
+    rounds: a slot cannot be fitted against reference mips that start at a
+    slot which is itself still wrong.
+  - Open: a further round is in progress, including the slot where the one
+    texture that got worse starts; about 9 slots have conflicting
+    evidence; how many of the remaining low-alpha textures are content.
 - **Full-install colour check** (2026-11-24): share of textures under
   20 dB, colour only: BC1 BCPack 0.4 % against plain 1.0 %; BC7 BCPack
   1.1 % against plain 8.3 % (plain baselines include real mip outliers).
