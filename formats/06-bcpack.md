@@ -457,8 +457,8 @@ bit positions and O on the odd ones.
   check has little leverage, because nearly every BC7 texture roots all
   its blocks at one or two slots. Open: 20 slots still 0.5–1.0 above the
   same-root baseline, 85 wraps, and the coupled pair.
-- **BC7 alpha in the endpoint presets** (2026-11-24; cause high, not yet
-  fixed in the tables of [§6A.4](06a-bcpack-tables.md#6a4-fitted-bc3bc7-tables)):
+- **BC7 alpha in the endpoint presets** (2026-11-24; cause high, refitted
+  in the tables of [§6A.4](06a-bcpack-tables.md#6a4-fitted-bc3bc7-tables)):
   a mip check over the whole install (57 stores, every BCPack texture)
   finds 93 of 1,433 BCPack BC7 textures with alpha under 25 dB while their
   colour is fine (6.5 %, against 2.7 % for plain BC7). 91 of the 256 BC7
@@ -466,10 +466,21 @@ bit positions and O on the odd ones.
   scored colour only. Blocks whose chain reaches such a slot through alpha
   modes alone decode alpha about 224–240 too low; chains that pass a
   three-channel block are unaffected, because those reset the alpha state.
-  A fit of the alpha entries on mip consistency is in progress (a first
-  round moves 42 slots, typically 0 → 224–240). *This qualifies the BC7
-  "alpha in the preset fit" figures under the quality table above: that
-  fit did not reach these 91 slots.*
+  Only chains that stay in the alpha modes (4 to 7) read preset alpha.
+  *This qualifies the BC7 "alpha in the preset fit" figures under the
+  quality table above: that fit did not reach these 91 slots.*
+  - **Refit** (2026-11-24; medium-high for the 37 slots, each confirmed
+    per texture; the values are fitted, so close rather than exact): per
+    slot, coordinate descent over the six alpha entries against the 2 × 2
+    mean of the next smaller mip, in rounds against the previous round's
+    table. A slot is kept only if the per-texture mip check over the whole
+    install confirms it. 37 slots changed, typically alpha 0 → 224–240;
+    colour entries are unchanged. Full-install mip check: alpha better on
+    48 textures and worse on 3; textures under 25 dB alpha 93 → 66, under
+    20 dB 76 → 49. About 39 of the 66 are expected from content (2.7 % of
+    plain BC7 textures are under 25 dB).
+  - Open: 9 more slots from a later round are being checked; about 10
+    slots have conflicting evidence and stay unchanged.
 - **Full-install colour check** (2026-11-24): share of textures under
   20 dB, colour only: BC1 BCPack 0.4 % against plain 1.0 %; BC7 BCPack
   1.1 % against plain 8.3 % (plain baselines include real mip outliers).
