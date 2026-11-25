@@ -519,9 +519,10 @@ per-layer vec4s are in [§12](12-materials.md).
   different caliper at the rear. So the parts named by model are probably
   the front axle's (medium: the named calipers are the bigger ones).
   Open: which caliper is used when a configuration has both a caliper
-  named by model and a `calipers_front` part (44 configurations), and the
-  names of slots `439fddac` and `2ba6699f`, which hold `caliper_rimlight`
-  and `drumbrake_rimlight` models (49 configurations).
+  named by model and a `calipers_front` part (44 configurations). The
+  slots that hold `caliper_rimlight` and `drumbrake_rimlight` models (49
+  configurations) are `lights_rims` `439fddac` and `lights_rims_rear`
+  `2ba6699f` ([names](11-vehicle-paint.md#names-recovered-by-hash-2026-11-24)).
 - **Hinged panels** (names high; hinge line medium, two cars): bones
   `door_dside_f`, `door_dside_r`, `door_pside_f`, `door_pside_r`, `bonnet`
   and `boot` sit on the hinge line, and the panel's vertices lie to one side,

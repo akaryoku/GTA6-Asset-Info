@@ -215,7 +215,7 @@ a separate PSO ([§17](17-other.md#vehicle-handling)).
     (`1c9dd6fe`) names its models by hashes that match no model name, so
     that link is not decoded (the bed placement above is by name and bone,
     medium). *Decoded with the asset id above (high):* beds are fitted by a
-    part of the vehicle's own pack in slot `1c9dd6fe` (name unknown), with
+    part of the vehicle's own pack in slot `truckbed` (`1c9dd6fe`), with
     elements for the bed (bone `mod_bed_attach`) and usually the rear
     bumper. All 23 pickup and flatbed models are named by such a part, each
     in its vehicle's configurations; one vehicle has pickup, flatbed, cargo
@@ -818,12 +818,43 @@ the field is the only support.
 | `567b0a43` | `plate_r` | plate bone |  |
 | `a0976fcb` | `mod_plate_f` | plate bone |  |
 | `8e174ab3` | `mod_plate_r` | plate bone |  |
+| `cd3c05e8` | `rims_rear` | mod slot | |
+| `e2f7859b` | `calipers` | mod slot | |
+| `a239ac32` | `plate_front_rear` | mod slot | |
+| `e6190438` | `plate_base` | mod slot | |
+| `ff4fb4a6` | `roof_attachments` | mod slot | |
+| `86795afc` | `truckbed_accessories` | mod slot | |
+| `b32aea33` | `bumper_f_canards` | mod slot | |
+| `050257b2` | `bumper_r_dangle` | mod slot | |
+| `3997fad5` | `interior_shifter_head` | mod slot | |
+| `8a28644c` | `police_scanner` | mod slot | |
+| `a3f3538a` | `searchlight` | mod slot | |
+| `439fddac` | `lights_rims` | mod slot | holds `caliper_rimlight` / `drumbrake_rimlight` |
+| `2ba6699f` | `lights_rims_rear` | mod slot | holds `caliper_rimlight` / `drumbrake_rimlight` |
+| `0b6be600` | `bike_forks` | mod slot | |
+| `f28477ce` | `bike_handlebars` | mod slot | |
+| `086fab61` | `overlays_bodyshell` | mod slot | |
+| `f1ea1f74` | `sirens_ext2` | mod slot | |
 | `c8313558` | `carPrimerSelection` | colour record group Y | stem found on two hashes |
 | `6076324c` | `carPrimerSelectionB` | group Y |  |
 | `52b096c1` | `carPrimerSelectionC` | group Y |  |
 | `adb52ec3` | `carPrimerPage` | group Y |  |
 | `9dad9c4d` | `carPrimerPageB` | group Y |  |
 | `abe838c2` | `carPrimerPageC` | group Y |  |
+
+**Mod slot names** (2026-11-24). A mod part's slot field is joaat of a
+plain lower-case name. 139 of the 166 slots in use are named, covering
+13,694 of 13,999 parts; the table lists those not named elsewhere on this
+page, and the rest follow the same patterns. Names use `_f` / `_r` and
+`_l` / `_r` suffixes, `_rear` for a rear-axle twin of a slot, and the
+prefixes `interior_`, `overlays_`, `sirens_`, `lights_`, `bike_` and
+`heli_`. Confidence is high where the slot's models carry the same word
+(most of the large slots). The names were found by a dictionary search of
+about 17 million candidates against 166 hashes, so about 0.65 chance
+matches are expected over the whole list; a name on a slot whose parts have
+no resolved model could be one of those. Open: 27 slots (305 parts),
+among them call signs, fairings, some siren and weapon mounts, and
+single-use slots.
 
 Stem X re-computes as `boatPrimer` on all six of its hashes, so the three
 groups of a colour record are `albedo`, `carPrimer` and `boatPrimer`.
