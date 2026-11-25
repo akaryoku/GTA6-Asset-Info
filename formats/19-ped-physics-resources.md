@@ -272,6 +272,51 @@ not re-checked):
     two ambient buffers hold, the wetness, glint and no-direction variants, which of the four is the
     lookup the material data names, and a fifth lookup (a 2D texture used
     as a 16-cube colour map, result × 1/π) that is not identified.
+- **Strand passes** (2026-11-24; the list high, from technique and program
+  names; the arithmetic medium, each program read once). Strand hair and
+  fur have a family of draw effects, one per pass: G-buffer, cascade (sun)
+  shadow, local light shadow, ped entity mask, and a visibility buffer
+  (a raster program and a compute "software" program).
+  - **Cascade shadow:** strands are solid, depth only. Width = scale ×
+    width curve / max(0.01, a × b), with a and b two scalars (per instance
+    and per draw). There is no minimum width.
+  - **Local light shadow:** a minimum width wmin = clamp(h × d × B / 8160,
+    1e-6, 0.05), with h a per-draw half float, d the distance to the
+    pass's eye and B a byte of the instance record; drawn width =
+    max(w, (w + wmin) / 2). One noise dither: the strand's depth is kept
+    when sat(2 × V) ≥ noise, with V a per-view value.
+  - **Both shadow pixel programs** apply a 2 × 2 stipple from a 4-bit mask
+    in the instance record: pixel bit = (y & 1) × 2 + (x & 1), and the
+    pixel is dropped when its bit is set.
+  - A **resolve** effect turns the strand visibility buffer into G-buffer
+    and depth: tile classification, eight tiled compute programs, a depth
+    resolve, blur, and 2× / 3× upscale passes.
+  - Open: what writes the stipple mask, what V is, shadow filtering and
+    bias.
+- **Strands in the ray-tracing geometry** (2026-11-24; high for the
+  arithmetic, both compute programs read in full). Two compute programs
+  build hair geometry for the ray-tracing structure from 24-byte batch
+  records:
+
+  | Word | Contents |
+  |---|---|
+  | 0 | first vertex (low 28 bits) |
+  | 1 | vertex count (low 25 bits) |
+  | 2 | first index |
+  | 3 | index count |
+  | 4 | bits 0–12 strand set index; bits 13 and 14 flags; high 16 bits a share k, scaled to 65535 |
+  | 5 | low byte points per strand; high 24 bits first strand |
+
+  - **Vertex program:** two vertices per strand point, p ± 0.5 × w × n,
+    with n = normalize(T × r), T = normalize(next point − previous point)
+    and r a random unit vector per strand from an integer hash;
+    w = width curve(u) / max(0.01, e × k), with e a per-instance half
+    float. So a strand is a flat ribbon with a random facing, widened by
+    1 / k.
+  - **Index program:** (points − 1) quads per strand, six indices each.
+  - A ray-traced directional shadow effect also exists (shadow, distant
+    shadow, tiled and denoise techniques); not read.
+  - Open: how k and the counts are chosen, and the two flag bits.
 - **Fur lighting** (high, confirmed by a second read): the fur mesh shaders write the ordinary
   G-buffer with material type 7, 5 or 0, as clothing and terrain shaders
   do, while strand hair writes type 6. So mesh fur takes the standard
