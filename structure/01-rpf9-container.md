@@ -63,6 +63,9 @@ occur. No file names or directory tree are recoverable from the TOC.
   marker.
 - RAGE resource pages begin at a 4 KiB boundary plus `0x10`.
 - Unused tails are zero-filled; empty regions are absent rather than padded.
+- A stored resource starts with 16 zero bytes and its data starts at byte 16. A chunk that is
+  not a zlib stream is stored raw (up to 64 KiB; often the last chunk), and a few file bodies are
+  one raw deflate stream with no zlib header. See [§1](../formats/01-rpf9.md#payload-confirmed).
 
 ## Nested archives
 
