@@ -699,6 +699,24 @@ cover different item sets.*
   low values such as (1, 1, 1) and (19, 13, 10), which fits a
   light-scattering hair shader. Open: how the two colours mix, the seven
   floats, and the flag.
+- **Painted hair and brow layers on the head** (2026-11-24; read once from
+  the shader program, medium-high; hex tiling medium). The head's main
+  deferred pixel program draws up to four painted layers over the skin
+  albedo. Each layer samples four textures: a mask (G = density, R = a
+  skin-side term), a direction map (RG), a detail texture (R = colour mix,
+  B = alpha) and a normal map. The detail texture is hex-tiled, each tile
+  rotated by the direction map. With d = detail.r^2.2 and k = detail.b^2.2:
+  - density = sat(remap(mask.g; lo, hi) + strength × (2d − 1) ×
+    tri(mask.g; hi)), with remap = (x − lo) / (hi − lo) and tri a tent
+    around hi;
+  - colour = lerp(A, B, d);
+  - w = density × k × opacity per layer, and albedo = skin × (1 −
+    sat(Σ w)) + Σ (w × colour).
+
+  In the program lo, hi, strength, opacity and the colours A and B are
+  unnamed per-layer values; which data members feed them is not shown
+  here. A and B may be the two colours of a hair preset above, but that
+  link is not checked against the data.
 - **Wardrobe links** (item records `f795e8ba`, kit sets `a9d57751`; tag map
   key → values):
   - item tag `f7b14eb8` → a hair preset name. On 196 hair items of 70
